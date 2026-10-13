@@ -56,7 +56,7 @@ After editing the schema, regenerate: `gqlgen`, then `swag init` — the swagger
 
 ## Project Overview
 
-**PentAGI** is an automated security testing platform powered by AI agents. A `primary_agent` drives a flow, a `generator`/`refiner` pair plans and re-plans its subtasks, and specialist agents — `pentester`, `coder`, `searcher`, `installer`, `memorist`, `adviser`, `reflector`, `enricher`, `reporter`, `summarizer`, `assistant`, `tool_call_fixer` — execute them against LLM providers, Docker-sandboxed tools and a pgvector memory store. The authoritative list of roles is the `MsgchainType` enum in `backend/pkg/database/models.go`, mirrored as `AgentType` in the GraphQL schema.
+**NullHawk** is an automated security testing platform powered by AI agents. A `primary_agent` drives a flow, a `generator`/`refiner` pair plans and re-plans its subtasks, and specialist agents — `pentester`, `coder`, `searcher`, `installer`, `memorist`, `adviser`, `reflector`, `enricher`, `reporter`, `summarizer`, `assistant`, `tool_call_fixer` — execute them against LLM providers, Docker-sandboxed tools and a pgvector memory store. The authoritative list of roles is the `MsgchainType` enum in `backend/pkg/database/models.go`, mirrored as `AgentType` in the GraphQL schema.
 
 The application is a monorepo:
 

@@ -413,7 +413,7 @@ The header of both sidebars — the app's and the settings one — is a button, 
 label. It opens a panel that states which build is running and what the update
 service thinks of it. Three things are worth a pass of their own.
 
-**What it must say.** The trigger shows the shell's title — PentAGI in the app,
+**What it must say.** The trigger shows the shell's title — NullHawk in the app,
 Settings in the settings — and the version under it;
 the panel repeats the version, adds a `build` line with the revision, a channel
 badge (`preview`, `stable` or `nightly` — the server cannot answer `disabled`), the
@@ -838,7 +838,7 @@ events does not move a Radix strip.
 
 **Composer states** — with the flow running, the composer must show **Stop**
 (which stops generation) and the textarea carries `disabled`, not `readOnly`, with
-the placeholder "PentAGI is working... Click Stop to interrupt"; with the flow
+the placeholder "NullHawk is working... Click Stop to interrupt"; with the flow
 finished or failed the form stays disabled and the placeholder becomes "This flow
 has ended. Create a new one to continue." Both strings end in three dots or a full
 sentence exactly as quoted — a check written against a typographic ellipsis matches

@@ -1,6 +1,6 @@
 # Saved Replies
 
-These are standardized responses for the PentAGI Development Team to use when responding to Issues and Pull Requests. Using these templates helps maintain consistency in our communications and saves time.
+These are standardized responses for the NullHawk Development Team to use when responding to Issues and Pull Requests. Using these templates helps maintain consistency in our communications and saves time.
 
 Since GitHub currently does not support repository-wide saved replies, team members should maintain these individually. All responses are versioned for easier updates.
 
@@ -20,7 +20,7 @@ Thank you for reporting this issue! This has been resolved in a recent release. 
 
 If you continue experiencing problems after updating, please:
 1. Check your configuration against our documentation
-2. Provide logs from both PentAGI and monitoring systems (Grafana/Langfuse)
+2. Provide logs from both NullHawk and monitoring systems (Grafana/Langfuse)
 3. Include details about your environment and enabled features
 ```
 
@@ -28,7 +28,7 @@ If you continue experiencing problems after updating, please:
 ```
 Thank you for your report! To help us better understand and address your issue, please provide additional information:
 
-1. PentAGI version and deployment method (Docker Compose/Custom)
+1. NullHawk version and deployment method (Docker Compose/Custom)
 2. Relevant logs from:
    - Docker containers
    - Grafana dashboards (if enabled)
@@ -63,7 +63,7 @@ If you believe this behavior should be different, please:
 2. Explain why the current behavior doesn't meet your needs
 3. Suggest alternative behavior that would work better
 
-We're always open to improving PentAGI's functionality.
+We're always open to improving NullHawk's functionality.
 ```
 
 ### Issue: Missing Template (v1)
@@ -100,7 +100,7 @@ If you're interested in further contributions, check our:
 - [Help Wanted Issues](https://github.com/vxcontrol/pentagi/labels/help-wanted)
 - [Good First Issues](https://github.com/vxcontrol/pentagi/labels/good-first-issue)
 
-Thank you for improving PentAGI!
+Thank you for improving NullHawk!
 ```
 
 ### PR: Needs Work (v1)

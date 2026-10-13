@@ -2,7 +2,7 @@
 
 ## Core Concepts
 
-The processor package manages PentAGI stack lifecycle through state-oriented approach. Main idea: maintain consistency between desired user state (state.State) and actual system state (checker.CheckResult).
+The processor package manages NullHawk stack lifecycle through state-oriented approach. Main idea: maintain consistency between desired user state (state.State) and actual system state (checker.CheckResult).
 
 ## Key Principles
 
@@ -87,15 +87,15 @@ p.checker.GatherLangfuseInfo(ctx)
 
 **Rationale**: Langfuse simpler than observability (single file only), but follows same logic. As a precondition for local start, configuration must be connected (see checker `LangfuseConnected`).
 
-#### Phase 3: PentAGI Stack Management
+#### Phase 3: NullHawk Stack Management
 ```go
-// PentAGI always embedded, always required
+// NullHawk always embedded, always required
 p.fsOps.ensureStackIntegrity(ctx, ProductStackPentagi, state)
 p.composeOps.updateStack(ctx, ProductStackPentagi, state)
 p.checker.GatherPentagiInfo(ctx)
 ```
 
-**Rationale**: PentAGI - main stack, always installed, only file integrity check.
+**Rationale**: NullHawk - main stack, always installed, only file integrity check.
 
 ### Critical Implementation Details
 

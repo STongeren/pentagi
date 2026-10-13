@@ -1,10 +1,10 @@
-# PentAGI Configuration Guide
+# NullHawk Configuration Guide
 
-This document serves as a comprehensive guide to the configuration system in PentAGI, primarily aimed at developers. It details all available configuration options, their purposes, default values, and how they're used throughout the application.
+This document serves as a comprehensive guide to the configuration system in NullHawk, primarily aimed at developers. It details all available configuration options, their purposes, default values, and how they're used throughout the application.
 
 ## Table of Contents
 
-- [PentAGI Configuration Guide](#pentagi-configuration-guide)
+- [NullHawk Configuration Guide](#pentagi-configuration-guide)
   - [Table of Contents](#table-of-contents)
   - [Configuration Basics](#configuration-basics)
     - [Current Web Settings Coverage](#current-web-settings-coverage)
@@ -17,7 +17,7 @@ This document serves as a comprehensive guide to the configuration system in Pen
       - [Extensions installed outside `public` (`DATABASE_EXTENSIONS_SCHEMA`)](#extensions-installed-outside-public-database_extensions_schema)
       - [Multi-tenant PostgreSQL access through PgBouncer](#multi-tenant-postgresql-access-through-pgbouncer)
       - [Multi-tenant PostgreSQL through Supabase's Supavisor pooler (`DATABASE_SEARCH_PATH_VIA_OPTIONS`)](#multi-tenant-postgresql-through-supabases-supavisor-pooler-database_search_path_via_options)
-    - [PentAGI Cloud API Settings](#pentagi-cloud-api-settings)
+    - [NullHawk Cloud API Settings](#pentagi-cloud-api-settings)
       - [`UPDATE_STRATEGY`](#update_strategy)
       - [`UPDATE_CHECK_INTERVAL`](#update_check_interval)
       - [`UPDATE_SERVER_HOST`](#update_server_host)
@@ -83,7 +83,7 @@ This document serves as a comprehensive guide to the configuration system in Pen
   - [Network and Proxy Settings](#network-and-proxy-settings)
     - [Usage Details](#usage-details-11)
   - [Graphiti Knowledge Graph Settings](#graphiti-knowledge-graph-settings)
-    - [PentAGI Configuration Boundary](#pentagi-configuration-boundary)
+    - [NullHawk Configuration Boundary](#pentagi-configuration-boundary)
     - [Client Lifecycle and Failure Behavior](#client-lifecycle-and-failure-behavior)
     - [Data Flow, Search, and Tenancy](#data-flow-search-and-tenancy)
     - [Deployment Ownership](#deployment-ownership)
@@ -98,7 +98,7 @@ This document serves as a comprehensive guide to the configuration system in Pen
 
 ## Configuration Basics
 
-PentAGI uses environment variables for configuration, with support for `.env` files through the `godotenv` package. The configuration is defined in the `Config` struct in `pkg/config/config.go` and is loaded using the `NewConfig()` function.
+NullHawk uses environment variables for configuration, with support for `.env` files through the `godotenv` package. The configuration is defined in the `Config` struct in `pkg/config/config.go` and is loaded using the `NewConfig()` function.
 
 ```go
 func NewConfig() (*Config, error) {
@@ -127,11 +127,11 @@ This function automatically loads environment variables from a `.env` file if pr
 
 ### Current Web Settings Coverage
 
-The running PentAGI instance already exposes several settings areas in the web UI:
+The running NullHawk instance already exposes several settings areas in the web UI:
 
 - **Settings -> Providers**: Manage user-defined provider profiles, per-agent model and runtime options, and provider test actions for provider types supported by the running server.
 - **Settings -> Prompts**: Manage system, human, and tool prompt templates.
-- **Settings -> PentAGI API**: Create, revoke, and delete PentAGI API tokens.
+- **Settings -> NullHawk API**: Create, revoke, and delete NullHawk API tokens.
 - **Other UI-managed preferences**: Favorite flows are stored as user preferences, and theme selection is handled client-side from the main sidebar/profile controls.
 
 These web-console features do not replace the environment variables in this guide for provider credentials, endpoints, or external integrations.
@@ -159,20 +159,20 @@ These settings control basic application behavior and are foundational for the s
 | Debug            | `DEBUG`                     | `false`                                                                      | Enables debug mode with additional logging                               |
 | DataDir          | `DATA_DIR`                  | `./data`                                                                     | Directory for storing persistent data                                    |
 | AskUser          | `ASK_USER`                  | `false`                                                                      | When enabled, requires explicit user confirmation for certain operations |
-| TenantID         | `TENANT_ID`                 | *(empty)*                                                                    | Namespaces every externally-visible artifact this instance creates so several PentAGI instances can share one host and one set of backing services. Empty = single-instance behavior, unchanged. See [Multi-Instance Deployment](#multi-instance-deployment-tenant_id). |
+| TenantID         | `TENANT_ID`                 | *(empty)*                                                                    | Namespaces every externally-visible artifact this instance creates so several NullHawk instances can share one host and one set of backing services. Empty = single-instance behavior, unchanged. See [Multi-Instance Deployment](#multi-instance-deployment-tenant_id). |
 | DockerPortsBase  | `DOCKER_PORTS_BASE`         | `0` (means `28000`)                                                          | First host port for per-flow sandbox port publishing; each instance owns `[base, base+2000)` |
-| InstallationID   | `INSTALLATION_ID`           | *(none)*                                                                     | Unique installation identifier for PentAGI Cloud API communication       |
-| LicenseKey       | `LICENSE_KEY`               | *(none)*                                                                     | License key for PentAGI Cloud API authentication and feature activation  |
-| UpdateStrategy   | `UPDATE_STRATEGY`         | `preview`                                                                    | Which builds this installation is offered: `nightly`, `preview` or `stable`. An unrecognised value falls back to `preview`. See [PentAGI Cloud API Settings](#pentagi-cloud-api-settings). |
-| UpdateCheckInterval | `UPDATE_CHECK_INTERVAL` | `3h`                                                                         | How often the running server reports its own state to the Cloud API. `0` disables the report. See [PentAGI Cloud API Settings](#pentagi-cloud-api-settings). |
-| UpdateServerHost | `UPDATE_SERVER_HOST`      | `update.pentagi.com`                                                         | PentAGI Cloud API endpoint as `host[:port]`, **without a scheme** — the connection is always HTTPS. See [PentAGI Cloud API Settings](#pentagi-cloud-api-settings). |
-| SupportServerHost | `SUPPORT_SERVER_HOST`    | `support.pentagi.com`                                                        | PentAGI Support API endpoint as `host[:port]`, same shape as `UPDATE_SERVER_HOST`. See [PentAGI Cloud API Settings](#pentagi-cloud-api-settings). |
+| InstallationID   | `INSTALLATION_ID`           | *(none)*                                                                     | Unique installation identifier for NullHawk Cloud API communication       |
+| LicenseKey       | `LICENSE_KEY`               | *(none)*                                                                     | License key for NullHawk Cloud API authentication and feature activation  |
+| UpdateStrategy   | `UPDATE_STRATEGY`         | `preview`                                                                    | Which builds this installation is offered: `nightly`, `preview` or `stable`. An unrecognised value falls back to `preview`. See [NullHawk Cloud API Settings](#pentagi-cloud-api-settings). |
+| UpdateCheckInterval | `UPDATE_CHECK_INTERVAL` | `3h`                                                                         | How often the running server reports its own state to the Cloud API. `0` disables the report. See [NullHawk Cloud API Settings](#pentagi-cloud-api-settings). |
+| UpdateServerHost | `UPDATE_SERVER_HOST`      | `update.pentagi.com`                                                         | NullHawk Cloud API endpoint as `host[:port]`, **without a scheme** — the connection is always HTTPS. See [NullHawk Cloud API Settings](#pentagi-cloud-api-settings). |
+| SupportServerHost | `SUPPORT_SERVER_HOST`    | `support.pentagi.com`                                                        | NullHawk Support API endpoint as `host[:port]`, same shape as `UPDATE_SERVER_HOST`. See [NullHawk Cloud API Settings](#pentagi-cloud-api-settings). |
 
 ### Multi-Instance Deployment (`TENANT_ID`)
 
-`TENANT_ID` namespaces the artifacts a PentAGI instance creates in **shared external services**, so that several independent installations can use one PostgreSQL server, one worker node (Docker daemon), one Neo4j/Graphiti and one Langfuse without colliding.
+`TENANT_ID` namespaces the artifacts a NullHawk instance creates in **shared external services**, so that several independent installations can use one PostgreSQL server, one worker node (Docker daemon), one Neo4j/Graphiti and one Langfuse without colliding.
 
-**Primary use case: several management instances, shared resources.** The typical deployment puts each PentAGI management backend on its own server, while the heavy shared resources — the worker node where sandbox containers run, and the database — are common. `TENANT_ID` is what keeps those instances from writing over each other.
+**Primary use case: several management instances, shared resources.** The typical deployment puts each NullHawk management backend on its own server, while the heavy shared resources — the worker node where sandbox containers run, and the database — are common. `TENANT_ID` is what keeps those instances from writing over each other.
 
 Running several management instances on **one** server is also possible (for example behind an nginx reverse proxy), but that is not what the installer or the stock `docker-compose.yml` are built for — see *Deployment topologies* below.
 
@@ -239,15 +239,15 @@ ALTER EXTENSION vector SET SCHEMA public, or set DATABASE_EXTENSIONS_SCHEMA=exte
 to match where it already lives
 ```
 
-Set `DATABASE_EXTENSIONS_SCHEMA=extensions` (or whatever schema the error reports) instead of moving the extension with `ALTER EXTENSION ... SET SCHEMA` — the schema only needs to be part of the `search_path` PentAGI computes (`<tenant>,<DATABASE_EXTENSIONS_SCHEMA>`), moving a provider-managed extension out of its documented location is unnecessary and risks breaking whatever else that provider expects to find it there.
+Set `DATABASE_EXTENSIONS_SCHEMA=extensions` (or whatever schema the error reports) instead of moving the extension with `ALTER EXTENSION ... SET SCHEMA` — the schema only needs to be part of the `search_path` NullHawk computes (`<tenant>,<DATABASE_EXTENSIONS_SCHEMA>`), moving a provider-managed extension out of its documented location is unnecessary and risks breaking whatever else that provider expects to find it there.
 
 #### Multi-tenant PostgreSQL access through PgBouncer
 
 `DATABASE_URL` can point at a PgBouncer instance instead of PostgreSQL directly, but three things have to be true, independent of each other:
 
-1. **`pool_mode = session` on the PgBouncer side.** PentAGI holds a `pg_advisory_lock`/`pg_advisory_unlock` pair on one dedicated connection across the whole tenant-bootstrap + migration sequence (`backend/pkg/database/tenant.go`), and `pgx` (used by the pgvector pool) caches server-side prepared statements by default. Both break silently under `transaction`/`statement` pooling, because PgBouncer is then free to hand the client a different backend connection between statements. This requirement is unrelated to tenancy — it applies even with `TENANT_ID` empty.
-2. **`ignore_startup_parameters = search_path` in `pgbouncer.ini`.** With a tenant configured, PentAGI's own DSN already carries `?search_path=<tenant>,<DATABASE_EXTENSIONS_SCHEMA>` (see the table above). PgBouncer validates startup parameters from the client against a small built-in allowlist and rejects anything else with `unsupported startup parameter: search_path` unless it is explicitly ignored. Ignoring it does **not** apply the value — it only stops PgBouncer from rejecting the connection — so this step alone is not sufficient; see the next point.
-3. **A `connect_query` per tenant in PgBouncer's `[databases]` section**, since PentAGI's own `search_path` startup parameter is ignored per point 2 above. `connect_query` runs on PgBouncer's own connection to PostgreSQL before any client statement, so it is not subject to the client-facing startup-parameter allowlist and works regardless of pool mode:
+1. **`pool_mode = session` on the PgBouncer side.** NullHawk holds a `pg_advisory_lock`/`pg_advisory_unlock` pair on one dedicated connection across the whole tenant-bootstrap + migration sequence (`backend/pkg/database/tenant.go`), and `pgx` (used by the pgvector pool) caches server-side prepared statements by default. Both break silently under `transaction`/`statement` pooling, because PgBouncer is then free to hand the client a different backend connection between statements. This requirement is unrelated to tenancy — it applies even with `TENANT_ID` empty.
+2. **`ignore_startup_parameters = search_path` in `pgbouncer.ini`.** With a tenant configured, NullHawk's own DSN already carries `?search_path=<tenant>,<DATABASE_EXTENSIONS_SCHEMA>` (see the table above). PgBouncer validates startup parameters from the client against a small built-in allowlist and rejects anything else with `unsupported startup parameter: search_path` unless it is explicitly ignored. Ignoring it does **not** apply the value — it only stops PgBouncer from rejecting the connection — so this step alone is not sufficient; see the next point.
+3. **A `connect_query` per tenant in PgBouncer's `[databases]` section**, since NullHawk's own `search_path` startup parameter is ignored per point 2 above. `connect_query` runs on PgBouncer's own connection to PostgreSQL before any client statement, so it is not subject to the client-facing startup-parameter allowlist and works regardless of pool mode:
 
    ```ini
    [databases]
@@ -273,11 +273,11 @@ This sends the tenant's search_path as `options=--search_path=<tenant>,<DATABASE
 
 This flag changes nothing for a direct PostgreSQL connection or a PgBouncer setup already following the recipe above; both accept `search_path` and `options` equally, so there is no reason to enable it outside a Supavisor-fronted deployment.
 
-### PentAGI Cloud API Settings
+### NullHawk Cloud API Settings
 
-These four are **shared**: one value in one `.env`, read by the installer and by the running PentAGI server alike. The server parses them into the `Config` struct as `UpdateServerHost`, `UpdateStrategy`, `UpdateCheckInterval` and `SupportServerHost`, and `docker-compose.yml` passes all four into the container; the installer's own calls read them straight from the file, and its *Server Settings* form edits every one of them except `UPDATE_CHECK_INTERVAL`, which concerns only the server and is set by hand. There is deliberately no per-component variant of any of them — an installation that pointed the installer at one endpoint and the server at another would be talking about itself in two places at once.
+These four are **shared**: one value in one `.env`, read by the installer and by the running NullHawk server alike. The server parses them into the `Config` struct as `UpdateServerHost`, `UpdateStrategy`, `UpdateCheckInterval` and `SupportServerHost`, and `docker-compose.yml` passes all four into the container; the installer's own calls read them straight from the file, and its *Server Settings* form edits every one of them except `UPDATE_CHECK_INTERVAL`, which concerns only the server and is set by hand. There is deliberately no per-component variant of any of them — an installation that pointed the installer at one endpoint and the server at another would be talking about itself in two places at once.
 
-`UPDATE_SERVER_HOST`, together with `INSTALLATION_ID` and `LICENSE_KEY`, is behind every call either side makes to the PentAGI Cloud API: the update check the installer runs while gathering the state of the machine, the package info and download calls behind the installer build it offers, the same pair of calls used to fetch the Jaeger ClickHouse storage plugin whenever the observability stack is updated — that plugin is a file mounted into the container rather than an image, so a broken `UPDATE_SERVER_HOST` stops it from being installed as surely as it stops a check — and the running server's own periodic report, described under [`UPDATE_CHECK_INTERVAL`](#update_check_interval). `UPDATE_STRATEGY` travels only in the update check; the package calls name a component, a version and a platform, and nothing else.
+`UPDATE_SERVER_HOST`, together with `INSTALLATION_ID` and `LICENSE_KEY`, is behind every call either side makes to the NullHawk Cloud API: the update check the installer runs while gathering the state of the machine, the package info and download calls behind the installer build it offers, the same pair of calls used to fetch the Jaeger ClickHouse storage plugin whenever the observability stack is updated — that plugin is a file mounted into the container rather than an image, so a broken `UPDATE_SERVER_HOST` stops it from being installed as surely as it stops a check — and the running server's own periodic report, described under [`UPDATE_CHECK_INTERVAL`](#update_check_interval). `UPDATE_STRATEGY` travels only in the update check; the package calls name a component, a version and a platform, and nothing else.
 
 Both sides honour `PROXY_URL`. The installer's own proxy setting takes precedence over `HTTP_PROXY`/`HTTPS_PROXY` in the environment, because it is the one the operator configured deliberately and often the only one carrying credentials. See [Network and Proxy Settings](#network-and-proxy-settings).
 
@@ -325,7 +325,7 @@ The repairs and the refusals above are the installer's. The running server hands
 
 #### `SUPPORT_SERVER_HOST`
 
-The PentAGI Support API endpoint, in exactly the shape `UPDATE_SERVER_HOST` takes: `host[:port]`, no scheme, empty meaning `support.pentagi.com`. It is a separate service from the update endpoint and is configured separately, so that an installation reaching the Cloud API through a mirror or an internal proxy can point the two at different places.
+The NullHawk Support API endpoint, in exactly the shape `UPDATE_SERVER_HOST` takes: `host[:port]`, no scheme, empty meaning `support.pentagi.com`. It is a separate service from the update endpoint and is configured separately, so that an installation reaching the Cloud API through a mirror or an internal proxy can point the two at different places.
 
 It is written by the installer's *Server Settings* form and parsed by the server, and no call targets it yet — the support integration that will use it is not in place. Setting it today changes nothing; leaving it empty costs nothing either.
 
@@ -365,7 +365,7 @@ if cfg.Debug {
 }
 ```
 
-- **DataDir**: Specifies where PentAGI stores persistent data. This is used across multiple components:
+- **DataDir**: Specifies where NullHawk stores persistent data. This is used across multiple components:
   - In `docker/client.go` for container volume mapping
   - For screenshots storage in `services.NewScreenshotService`
   - In tools for file operations and data persistence
@@ -393,7 +393,7 @@ if fte.cfg.AskUser {
 }
 ```
 
-- **InstallationID**: A unique identifier for the PentAGI installation used for cloud API communication:
+- **InstallationID**: A unique identifier for the NullHawk installation used for cloud API communication:
   - Generated automatically during installation or can be manually set
   - Required for certain cloud-based features and integrations
 
@@ -404,10 +404,10 @@ if cfg.InstallationID != "" {
 }
 ```
 
-- **LicenseKey**: Authentication key for PentAGI Cloud API and premium feature activation:
+- **LicenseKey**: Authentication key for NullHawk Cloud API and premium feature activation:
   - Validates license and enables licensed features
   - Required for enterprise features and support
-  - Used for authentication with PentAGI Cloud services
+  - Used for authentication with NullHawk Cloud services
 
 ```go
 // Used in cloud SDK initialization
@@ -418,17 +418,17 @@ if cfg.LicenseKey != "" {
 
 ## Docker Settings
 
-These settings control how PentAGI interacts with Docker, which is used for terminal isolation and executing commands in a controlled environment. They're crucial for the security and functionality of tool execution.
+These settings control how NullHawk interacts with Docker, which is used for terminal isolation and executing commands in a controlled environment. They're crucial for the security and functionality of tool execution.
 
 | Option                       | Environment Variable               | Default Value          | Description |
 | ---------------------------- | ---------------------------------- | ---------------------- | ----------- |
-| DockerInside                 | `DOCKER_INSIDE`                    | `false`                | Set to `true` if PentAGI runs inside Docker and needs to access the host Docker daemon. |
+| DockerInside                 | `DOCKER_INSIDE`                    | `false`                | Set to `true` if NullHawk runs inside Docker and needs to access the host Docker daemon. |
 | DockerNetAdmin               | `DOCKER_NET_ADMIN`                 | `false`                | Set to `true` to grant the primary container NET_ADMIN capability for advanced networking. |
 | DockerSocket                 | `DOCKER_SOCKET`                    | *(none)*               | Path to Docker socket for container management |
 | DockerInsideHost             | `DOCKER_INSIDE_HOST`               | *(none)*               | Docker daemon endpoint given to worker containers; also disables host-socket autodetection. See [Worker Docker Access](#worker-docker-access-docker_inside_) |
 | DockerInsideTLSVerify        | `DOCKER_INSIDE_TLS_VERIFY`         | *(none)*               | TLS verification for the worker container's Docker connection |
 | DockerInsideCertPath         | `DOCKER_INSIDE_CERT_PATH`          | *(none)*               | TLS certificate directory **on the worker node**, mounted read-only into worker containers |
-| DockerInsidePolicyTests      | `DOCKER_INSIDE_POLICY_TESTS`       | `false`                | Test the sandbox once at startup: the daemon must be separate from PentAGI's and must refuse host-escape requests. Its only effect is whether agents get Docker — a failure turns the sandbox off and PentAGI still starts. Off by default |
+| DockerInsidePolicyTests      | `DOCKER_INSIDE_POLICY_TESTS`       | `false`                | Test the sandbox once at startup: the daemon must be separate from NullHawk's and must refuse host-escape requests. Its only effect is whether agents get Docker — a failure turns the sandbox off and NullHawk still starts. Off by default |
 | DockerDefaultImageForTest    | `DOCKER_DEFAULT_IMAGE_FOR_TEST`    | `vxcontrol/kali-linux:test` | Worker the startup test runs in, and the image it pulls into the sandbox |
 | DockerNetwork                | `DOCKER_NETWORK`                   | *(none)*               | Docker network name for bridge mode, or `host` for host network mode. See network modes below. |
 | DockerPublicIP               | `DOCKER_PUBLIC_IP`                 | `0.0.0.0`              | Public IP address for Docker containers' port bindings (bridge mode only) |
@@ -439,7 +439,7 @@ These settings control how PentAGI interacts with Docker, which is used for term
 
 ### Worker Docker Access (`DOCKER_INSIDE_*`)
 
-`DOCKER_HOST`, `DOCKER_TLS_VERIFY` and `DOCKER_CERT_PATH` tell **PentAGI itself** which daemon to create worker containers on. The `DOCKER_INSIDE_*` trio is the mirror image: it tells a **worker container** which daemon *it* may talk to. Both sets are independent — sandboxes can be pointed at a different daemon than the one that spawned them.
+`DOCKER_HOST`, `DOCKER_TLS_VERIFY` and `DOCKER_CERT_PATH` tell **NullHawk itself** which daemon to create worker containers on. The `DOCKER_INSIDE_*` trio is the mirror image: it tells a **worker container** which daemon *it* may talk to. Both sets are independent — sandboxes can be pointed at a different daemon than the one that spawned them.
 
 They are read only when `DOCKER_INSIDE=true`; with it disabled the sandbox gets no Docker access and no Docker configuration whatsoever.
 
@@ -452,7 +452,7 @@ They are read only when `DOCKER_INSIDE=true`; with it disabled the sandbox gets 
 | empty | set | **Nothing is mounted.** The sandbox reaches `DOCKER_INSIDE_HOST` and must pass the Docker API policy preflight before agent use. |
 | empty | empty | A local Docker host keeps historical socket autodetection; with a remote `DOCKER_HOST`, initialization fails until a worker endpoint or explicit socket is configured. |
 
-The separate-endpoint row is the point of the feature: mounting the host socket into a sandbox can give an autonomous agent control of the daemon running PentAGI itself, including every other flow's containers. A designated worker daemon must be distinct from the orchestration daemon and enforce the [Docker API policy checked at worker startup](docker.md#docker-api-policy-preflight). An explicit socket remains an unverified legacy exception.
+The separate-endpoint row is the point of the feature: mounting the host socket into a sandbox can give an autonomous agent control of the daemon running NullHawk itself, including every other flow's containers. A designated worker daemon must be distinct from the orchestration daemon and enforce the [Docker API policy checked at worker startup](docker.md#docker-api-policy-preflight). An explicit socket remains an unverified legacy exception.
 
 **What is injected.** Every non-empty `DOCKER_INSIDE_*` value is passed into the container as an environment variable with the `_INSIDE_` segment removed, so the Docker CLI inside picks it up with no extra configuration:
 
@@ -464,7 +464,7 @@ The separate-endpoint row is the point of the feature: mounting the host socket 
 
 Empty values are omitted rather than injected blank.
 
-When `DOCKER_INSIDE_CERT_PATH` is set, that directory is additionally bind-mounted **read-only at the same path** inside the container, so the injected `DOCKER_CERT_PATH` resolves unchanged. The path is resolved on the **worker node** — the machine whose daemon creates sandboxes — which may not be the machine running PentAGI or the installer. For that reason the installer does not verify it exists.
+When `DOCKER_INSIDE_CERT_PATH` is set, that directory is additionally bind-mounted **read-only at the same path** inside the container, so the injected `DOCKER_CERT_PATH` resolves unchanged. The path is resolved on the **worker node** — the machine whose daemon creates sandboxes — which may not be the machine running NullHawk or the installer. For that reason the installer does not verify it exists.
 
 **Example — sandboxes use a DinD sidecar over mutual TLS:**
 
@@ -480,7 +480,7 @@ DOCKER_INSIDE_CERT_PATH=/certs/client
 
 The Docker settings are primarily used in `pkg/docker/client.go` which implements the Docker client interface used throughout the application. This client is responsible for creating, managing, and executing commands in Docker containers:
 
-- **DockerInside**: Signals whether PentAGI is running inside a Docker container itself, which affects how volumes and sockets are mounted:
+- **DockerInside**: Signals whether NullHawk is running inside a Docker container itself, which affects how volumes and sockets are mounted:
   ```go
   inside := cfg.DockerInside
   ```
@@ -570,7 +570,7 @@ This client is used by the tools executor to run commands in isolated containers
 
 ## Server Settings
 
-These settings control the HTTP and GraphQL server that forms the backend API of PentAGI.
+These settings control the HTTP and GraphQL server that forms the backend API of NullHawk.
 
 | Option       | Environment Variable | Default Value | Description                      |
 | ------------ | -------------------- | ------------- | -------------------------------- |
@@ -586,7 +586,7 @@ These settings control the HTTP and GraphQL server that forms the backend API of
 
 Left empty behind a reverse proxy, every request is attributed to the proxy's own
 address, so the per-address login rate limit becomes a single budget shared by all
-users. Set it to the addresses or CIDRs of the proxies in front of PentAGI.
+users. Set it to the addresses or CIDRs of the proxies in front of NullHawk.
 
 ### Usage Details
 
@@ -742,7 +742,7 @@ The authentication settings are used in `pkg/server/router.go` to set up authent
   }
   ```
 
-  Google and GitHub both use the same PentAGI login callback endpoint. `PUBLIC_URL` should be the externally reachable base URL only, without an extra path suffix. If the URL configured in the provider console does not exactly match the generated callback URL, authentication will fail with a redirect URI mismatch error.
+  Google and GitHub both use the same NullHawk login callback endpoint. `PUBLIC_URL` should be the externally reachable base URL only, without an extra path suffix. If the URL configured in the provider console does not exactly match the generated callback URL, authentication will fail with a redirect URI mismatch error.
 
 These settings are essential for:
 - Secure user authentication and session management
@@ -825,12 +825,12 @@ An identity token that carries a `jti` claim, as Kubernetes service-account and 
 
 `ANTHROPIC_IDENTITY_TOKEN` is read once at startup and cannot be rotated: once the identity token expires, and after its first exchange if it carries `jti`, the provider cannot mint a new access token. It suits only runs shorter than the identity token's lifetime, the server log warns about it at startup and names the expiry, and a long-running server needs the token file.
 
-**Note on Google Vertex AI**: PentAGI does not currently expose a dedicated Vertex AI configuration path for Anthropic Claude in `.env`. The variables above target the direct Anthropic API. To run Claude through a non-Anthropic-hosted backend, use one of:
+**Note on Google Vertex AI**: NullHawk does not currently expose a dedicated Vertex AI configuration path for Anthropic Claude in `.env`. The variables above target the direct Anthropic API. To run Claude through a non-Anthropic-hosted backend, use one of:
 
 - **AWS Bedrock**: see the [AWS Bedrock LLM Provider](#aws-bedrock-llm-provider) section below and configure the `BEDROCK_*` variables.
-- **OpenAI-compatible gateway in front of Vertex AI**: expose Vertex AI through a proxy or gateway that translates requests into the Chat Completions format while preserving the chat and tool-call behavior PentAGI requires, then configure it as a [custom LLM provider](#custom-llm-provider) (`LLM_SERVER_URL`, `LLM_SERVER_KEY`, `LLM_SERVER_MODEL`). Reliability of this path depends on the gateway you choose.
+- **OpenAI-compatible gateway in front of Vertex AI**: expose Vertex AI through a proxy or gateway that translates requests into the Chat Completions format while preserving the chat and tool-call behavior NullHawk requires, then configure it as a [custom LLM provider](#custom-llm-provider) (`LLM_SERVER_URL`, `LLM_SERVER_KEY`, `LLM_SERVER_MODEL`). Reliability of this path depends on the gateway you choose.
 
-There is no `VERTEX_API_KEY` or `GOOGLE_APPLICATION_CREDENTIALS` variable wired into PentAGI's provider initialization today.
+There is no `VERTEX_API_KEY` or `GOOGLE_APPLICATION_CREDENTIALS` variable wired into NullHawk's provider initialization today.
 
 ### Ollama LLM Provider
 
@@ -880,7 +880,7 @@ There is no `VERTEX_API_KEY` or `GOOGLE_APPLICATION_CREDENTIALS` variable wired 
 | DeepSeekServerURL | `DEEPSEEK_SERVER_URL` | `https://api.deepseek.com` | DeepSeek API endpoint URL                                |
 | DeepSeekProvider  | `DEEPSEEK_PROVIDER`   | *(none)*                   | Provider name prefix for LiteLLM integration (optional)  |
 
-**LiteLLM Integration**: Set `DEEPSEEK_PROVIDER=deepseek` to enable model prefixing (e.g., `deepseek/deepseek-flash`) when using LiteLLM proxy with default PentAGI configs.
+**LiteLLM Integration**: Set `DEEPSEEK_PROVIDER=deepseek` to enable model prefixing (e.g., `deepseek/deepseek-flash`) when using LiteLLM proxy with default NullHawk configs.
 
 ### GLM LLM Provider
 
@@ -895,7 +895,7 @@ There is no `VERTEX_API_KEY` or `GOOGLE_APPLICATION_CREDENTIALS` variable wired 
 - China: `https://open.bigmodel.cn/api/paas/v4`
 - Coding-specific: `https://api.z.ai/api/coding/paas/v4`
 
-**LiteLLM Integration**: Set `GLM_PROVIDER=zai` to enable model prefixing (e.g., `zai/glm-4`) when using LiteLLM proxy with default PentAGI configs.
+**LiteLLM Integration**: Set `GLM_PROVIDER=zai` to enable model prefixing (e.g., `zai/glm-4`) when using LiteLLM proxy with default NullHawk configs.
 
 ### Kimi LLM Provider
 
@@ -909,7 +909,7 @@ There is no `VERTEX_API_KEY` or `GOOGLE_APPLICATION_CREDENTIALS` variable wired 
 - International: `https://api.moonshot.ai/v1` (default)
 - China: `https://api.moonshot.cn/v1`
 
-**LiteLLM Integration**: Set `KIMI_PROVIDER=moonshot` to enable model prefixing (e.g., `moonshot/kimi-k2.6`) when using LiteLLM proxy with default PentAGI configs.
+**LiteLLM Integration**: Set `KIMI_PROVIDER=moonshot` to enable model prefixing (e.g., `moonshot/kimi-k2.6`) when using LiteLLM proxy with default NullHawk configs.
 
 ### Qwen LLM Provider
 
@@ -934,7 +934,7 @@ There is no `VERTEX_API_KEY` or `GOOGLE_APPLICATION_CREDENTIALS` variable wired 
 | MiniMaxServerURL | `MINIMAX_SERVER_URL` | `https://api.minimax.io/v1` | MiniMax API endpoint URL                                |
 | MiniMaxProvider  | `MINIMAX_PROVIDER`   | *(none)*                    | Provider name prefix for LiteLLM integration (optional) |
 
-**LiteLLM Integration**: Set `MINIMAX_PROVIDER=minimax` to enable model prefixing (e.g., `minimax/MiniMax-M3`) when using LiteLLM proxy with default PentAGI configs.
+**LiteLLM Integration**: Set `MINIMAX_PROVIDER=minimax` to enable model prefixing (e.g., `minimax/MiniMax-M3`) when using LiteLLM proxy with default NullHawk configs.
 
 ### Mistral LLM Provider
 
@@ -944,7 +944,7 @@ There is no `VERTEX_API_KEY` or `GOOGLE_APPLICATION_CREDENTIALS` variable wired 
 | MistralServerURL | `MISTRAL_SERVER_URL` | `https://api.mistral.ai/v1`  | Mistral API endpoint URL                                |
 | MistralProvider  | `MISTRAL_PROVIDER`   | *(none)*                     | Provider name prefix for LiteLLM integration (optional) |
 
-**LiteLLM Integration**: Set `MISTRAL_PROVIDER=mistral` to enable model prefixing (e.g., `mistral/mistral-medium-latest`) when using LiteLLM proxy with default PentAGI configs.
+**LiteLLM Integration**: Set `MISTRAL_PROVIDER=mistral` to enable model prefixing (e.g., `mistral/mistral-medium-latest`) when using LiteLLM proxy with default NullHawk configs.
 
 ### xAI (Grok) LLM Provider
 
@@ -954,7 +954,7 @@ There is no `VERTEX_API_KEY` or `GOOGLE_APPLICATION_CREDENTIALS` variable wired 
 | XAIServerURL | `XAI_SERVER_URL`     | `https://api.x.ai/v1`  | xAI API endpoint URL                                    |
 | XAIProvider  | `XAI_PROVIDER`       | *(none)*               | Provider name prefix for LiteLLM integration (optional) |
 
-**LiteLLM Integration**: Set `XAI_PROVIDER=xai` to enable model prefixing (e.g., `xai/grok-4.3`) when using LiteLLM proxy with default PentAGI configs.
+**LiteLLM Integration**: Set `XAI_PROVIDER=xai` to enable model prefixing (e.g., `xai/grok-4.3`) when using LiteLLM proxy with default NullHawk configs.
 
 ### Custom LLM Provider
 
@@ -1153,7 +1153,7 @@ These settings are critical for:
 
 ## Embedding Settings
 
-These settings control the vector embedding service used for semantic search and similarity matching, which is fundamental for PentAGI's intelligent search capabilities.
+These settings control the vector embedding service used for semantic search and similarity matching, which is fundamental for NullHawk's intelligent search capabilities.
 
 | Option                 | Environment Variable        | Default Value | Description                                                                |
 | ---------------------- | --------------------------- | ------------- | -------------------------------------------------------------------------- |
@@ -1221,7 +1221,7 @@ These settings are essential for:
 
 ## Summarizer Settings
 
-These settings control the text summarization behavior used for condensing long conversations and improving context management in AI interactions. The summarization system is a critical component that allows PentAGI to maintain coherent, long-running conversations while managing token usage effectively.
+These settings control the text summarization behavior used for condensing long conversations and improving context management in AI interactions. The summarization system is a critical component that allows NullHawk to maintain coherent, long-running conversations while managing token usage effectively.
 
 | Option                   | Environment Variable             | Default Value | Description                                                |
 | ------------------------ | -------------------------------- | ------------- | ---------------------------------------------------------- |
@@ -1502,7 +1502,7 @@ The assistant summarizer configuration is designed to provide more memory for co
 
 These settings control which tools are available to AI agents and allow adding custom external functions. The Functions API enables fine-grained control over agent capabilities by selectively disabling built-in tools or extending functionality with custom integrations.
 
-For provider-neutral OSINT enrichment ideas that could be exposed through external functions, see [OSINT Integration Scenarios for PentAGI Agents](../../examples/proposals/osint-integration-scenarios.md).
+For provider-neutral OSINT enrichment ideas that could be exposed through external functions, see [OSINT Integration Scenarios for NullHawk Agents](../../examples/proposals/osint-integration-scenarios.md).
 
 | Field     | Type                 | Description                                                     |
 | --------- | -------------------- | --------------------------------------------------------------- |
@@ -1941,11 +1941,11 @@ The SSL settings provide additional security configuration:
 
 ## Graphiti Knowledge Graph Settings
 
-Graphiti is an optional beta integration. This section documents the PentAGI-side configuration boundary and lifecycle; the operator-facing deployment, provider, ingestion, extraction, and Neo4j settings are maintained in [README.md — Knowledge Graph Integration](../../README.md#knowledge-graph-integration-graphiti).
+Graphiti is an optional beta integration. This section documents the NullHawk-side configuration boundary and lifecycle; the operator-facing deployment, provider, ingestion, extraction, and Neo4j settings are maintained in [README.md — Knowledge Graph Integration](../../README.md#knowledge-graph-integration-graphiti).
 
-### PentAGI Configuration Boundary
+### NullHawk Configuration Boundary
 
-`pkg/config.Config` intentionally owns only the settings required by the PentAGI process:
+`pkg/config.Config` intentionally owns only the settings required by the NullHawk process:
 
 | Field | Environment Variable | Default | Responsibility |
 | --- | --- | --- | --- |
@@ -1953,7 +1953,7 @@ Graphiti is an optional beta integration. This section documents the PentAGI-sid
 | `GraphitiURL` | `GRAPHITI_URL` | *(empty)* | Graphiti API base URL; embedded deployments use `http://graphiti:8000` |
 | `GraphitiTimeout` | `GRAPHITI_TIMEOUT` | `30` seconds | Timeout used for Graphiti client requests and storage contexts |
 
-All other variables with `GRAPHITI_*`, `NEO4J_*`, provider, embedding, ingest, extraction, anchor, or logging names configure `docker-compose-graphiti.yml` or the Graphiti process. They are not parsed into the Go `Config` struct. Keep that boundary explicit when adding settings: a value needed by PentAGI belongs in `pkg/config/config.go`; a value consumed only by the sidecar belongs in `.env.example` plus the compose mapping.
+All other variables with `GRAPHITI_*`, `NEO4J_*`, provider, embedding, ingest, extraction, anchor, or logging names configure `docker-compose-graphiti.yml` or the Graphiti process. They are not parsed into the Go `Config` struct. Keep that boundary explicit when adding settings: a value needed by NullHawk belongs in `pkg/config/config.go`; a value consumed only by the sidecar belongs in `.env.example` plus the compose mapping.
 
 The provider controller applies an additional URL guard:
 
@@ -1969,7 +1969,7 @@ Consequently, `GRAPHITI_ENABLED=true` with an empty URL still creates a disabled
 
 ### Client Lifecycle and Failure Behavior
 
-`pkg/graphiti/client.go` wraps `graphiti-go-client` and performs a synchronous health check during provider initialization. It makes three attempts with a two-second backoff. A final failure is returned to `pkg/providers/providers.go`, which logs a warning and substitutes a disabled client so the rest of PentAGI can start.
+`pkg/graphiti/client.go` wraps `graphiti-go-client` and performs a synchronous health check during provider initialization. It makes three attempts with a two-second backoff. A final failure is returned to `pkg/providers/providers.go`, which logs a warning and substitutes a disabled client so the rest of NullHawk can start.
 
 The disabled wrapper has deliberate asymmetric behavior:
 
@@ -1977,7 +1977,7 @@ The disabled wrapper has deliberate asymmetric behavior:
 - Search methods return `graphiti is not enabled`; disabled clients are normally excluded from agent tool registration and prompts through `IsEnabled`.
 - Storage calls use `GraphitiTimeout`, log failures with their group ID, and return the error to the caller without making Graphiti a required persistence layer.
 
-Do not change initialization failures into fatal PentAGI startup errors without treating that as a deployment-contract change.
+Do not change initialization failures into fatal NullHawk startup errors without treating that as a deployment-contract change.
 
 ### Data Flow, Search, and Tenancy
 
@@ -1994,11 +1994,11 @@ Every request is partitioned by `Config.GroupID(flowID)`:
 
 ### Deployment Ownership
 
-The bundled stack is separate from `docker-compose.yml`. The installer distinguishes disabled, external, and embedded deployments using `GRAPHITI_ENABLED` and `GRAPHITI_URL`; `http://graphiti:8000` is the embedded endpoint. It starts the Graphiti stack before PentAGI so the startup health check can succeed.
+The bundled stack is separate from `docker-compose.yml`. The installer distinguishes disabled, external, and embedded deployments using `GRAPHITI_ENABLED` and `GRAPHITI_URL`; `http://graphiti:8000` is the embedded endpoint. It starts the Graphiti stack before NullHawk so the startup health check can succeed.
 
 Installer assets include `docker-compose-graphiti.yml` and the `graphiti` preset directory sourced from `examples/graphiti`. The target directory is checked, repaired, and removed with the Graphiti stack. Compose mounts it through `GRAPHITI_CONFIG_PATH` and `GRAPHITI_CONFIG_DIR`; the fallback target `configs` prevents a newer compose file paired with an older `.env` from masking the image's built-in `llm_configs` with an empty host directory.
 
-Models and call parameters belong to the provider YAML presets, selected by `GRAPHITI_LLM_CLIENT_TYPE`; they are not fields in the PentAGI Go configuration. `GRAPHITI_MODEL_NAME` is obsolete. Refer operators to the README instead of duplicating the sidecar's tuning reference here.
+Models and call parameters belong to the provider YAML presets, selected by `GRAPHITI_LLM_CLIENT_TYPE`; they are not fields in the NullHawk Go configuration. `GRAPHITI_MODEL_NAME` is obsolete. Refer operators to the README instead of duplicating the sidecar's tuning reference here.
 
 ## Agent Supervision Settings
 

@@ -1,6 +1,6 @@
 # Processor-Wizard Integration Guide
 
-> Technical documentation for embedded terminal integration in PentAGI installer wizard using Bubble Tea and pseudoterminals.
+> Technical documentation for embedded terminal integration in NullHawk installer wizard using Bubble Tea and pseudoterminals.
 
 ## Architecture Decision: Pseudoterminal vs Built-in Bubble Tea
 
@@ -150,7 +150,7 @@ Note: the integrity prompt lists only modified files; missing files are consider
 
 The maintenance list ([`maintenance.go`](../../cmd/installer/wizard/models/maintenance.go)) carries no behaviour of its own: `LoadItems` appends a `ListItem` holding a `ScreenID`, and `HandleSelection` turns the selected one into a `NavigationMsg{Target: item.ID}`. Changing what an entry does is therefore changing which screen its `ScreenID` names. Two entries no longer name the generic operation form.
 
-**Update PentAGI** points at `UpdateOverviewScreen` (`"update_overview"`), not at `UpdatePentagiScreen` (`"processor_operation_form§compose§update"`). [`update_overview.go`](../../cmd/installer/wizard/models/update_overview.go) renders what the update would change — the version move per stack, the per-component plan, and the release notes crossed on the way — and on `enter` emits `NavigationMsg{Target: UpdatePentagiScreen}`. The overview is inserted **between** the entry and the form; the form, its availability check and its `y/n` confirmation are untouched, so the sequence is entry → overview → form, not a replacement.
+**Update NullHawk** points at `UpdateOverviewScreen` (`"update_overview"`), not at `UpdatePentagiScreen` (`"processor_operation_form§compose§update"`). [`update_overview.go`](../../cmd/installer/wizard/models/update_overview.go) renders what the update would change — the version move per stack, the per-component plan, and the release notes crossed on the way — and on `enter` emits `NavigationMsg{Target: UpdatePentagiScreen}`. The overview is inserted **between** the entry and the form; the form, its availability check and its `y/n` confirmation are untouched, so the sequence is entry → overview → form, not a replacement.
 
 The overview screen holds no `ProcessorModel` and starts no operation — `NewUpdateOverviewModel` takes only the controller, styles and window. Everything it shows already sits in the last check result read through `controller.GetChecker()`, so it makes no network call and cannot fail. What separates "nothing to update" from "we never found out" is `CheckResult.UpdateFailure`, not the emptiness of `StackUpdates`: the screen is reachable from a menu entry drawn off an earlier check, and printing "up to date" after a check that never completed would be a claim in exactly the wrong direction.
 

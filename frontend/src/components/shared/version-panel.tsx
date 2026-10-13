@@ -25,7 +25,7 @@ import { useVersionInfo } from '@/providers/version-info-provider';
 export const PENTAGI_RELEASES_URL = 'https://github.com/vxcontrol/pentagi/releases';
 
 export const UPDATE_INSTRUCTION =
-    'Run the installer tool on the host where PentAGI is deployed and choose Maintenance → Update PentAGI.';
+    'Run the installer tool on the host where NullHawk is deployed and choose Maintenance → Update NullHawk.';
 
 export interface VersionFact {
     isAccented?: boolean;
@@ -126,9 +126,9 @@ export function describeVersion(info: VersionInfoFragmentFragment): VersionPrese
             return {
                 ...base,
                 detail: `${label} is the newest version on the ${info.strategy} channel.`,
-                headline: 'PentAGI is up to date',
+                headline: 'NullHawk is up to date',
                 indicator: 'none',
-                tooltip: `PentAGI ${label} is up to date.`,
+                tooltip: `NullHawk ${label} is up to date.`,
             };
         case UpdateState.Unknown:
         default:
@@ -305,7 +305,7 @@ function VersionDetails({
             <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-start justify-between gap-2 px-1 py-1.5">
                     <div className="min-w-0">
-                        <div className="truncate font-semibold">PentAGI {presentation.label}</div>
+                        <div className="truncate font-semibold">NullHawk {presentation.label}</div>
                         <div className="text-muted-foreground truncate font-mono text-xs">
                             build {versionInfo.build}
                         </div>

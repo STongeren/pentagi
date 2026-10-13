@@ -105,7 +105,7 @@ describe('MainSidebar version badge', () => {
     it('shows the running version under the product name, with the update indicator', () => {
         renderSidebar();
 
-        expect(screen.getByRole('button', { name: /PentAGI v2\.1\.0/ })).toHaveTextContent('v2.1.0');
+        expect(screen.getByRole('button', { name: /NullHawk v2\.1\.0/ })).toHaveTextContent('v2.1.0');
         expect(screen.getByTestId('version-indicator-update')).toBeInTheDocument();
         expect(screen.getByTestId('version-attention-dot')).toBeInTheDocument();
     });

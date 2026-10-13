@@ -2,7 +2,7 @@
 
 This document outlines test scenarios for the installer's system checking functionality, focusing on failure modes and their detection.
 
-The scenarios fall into two groups. The first is what the checker observes about this machine — Docker, disk, memory, local connectivity. The second is what the PentAGI Cloud API answers, and there the interesting part is that a failed call is not one condition: "the server could not be reached", "the daily allowance is spent" and "this license tier has no access" need different things from the user, and each has its own reason code and its own test.
+The scenarios fall into two groups. The first is what the checker observes about this machine — Docker, disk, memory, local connectivity. The second is what the NullHawk Cloud API answers, and there the interesting part is that a failed call is not one condition: "the server could not be reached", "the daily allowance is spent" and "this license tier has no access" need different things from the user, and each has its own reason code and its own test.
 
 ## Test Scenarios
 
@@ -100,7 +100,7 @@ Only the HTTPS probe uses `PROXY_URL`. The lookup resolves locally, and the pull
 
 ## Update Server Scenarios
 
-The installer talks to the PentAGI Cloud API over three calls — `POST /api/v1/proxy/updates/check`, `GET /api/v1/proxy/packages/info` and `GET /api/v1/proxy/packages/download`. Every one of them negotiates TLS and solves a proof-of-work challenge before the request is sent, so there is no local server to point the installer at: these scenarios are exercised in unit tests by substituting the call function with the error the transport would have produced (`cmd/installer/cloud/updates_test.go`, `cmd/installer/cloud/packages_test.go`, `cmd/installer/cloud/errors_test.go`), and observed in the field the way a support case arrives.
+The installer talks to the NullHawk Cloud API over three calls — `POST /api/v1/proxy/updates/check`, `GET /api/v1/proxy/packages/info` and `GET /api/v1/proxy/packages/download`. Every one of them negotiates TLS and solves a proof-of-work challenge before the request is sent, so there is no local server to point the installer at: these scenarios are exercised in unit tests by substituting the call function with the error the transport would have produced (`cmd/installer/cloud/updates_test.go`, `cmd/installer/cloud/packages_test.go`, `cmd/installer/cloud/errors_test.go`), and observed in the field the way a support case arrives.
 
 A call that produces no answer is classified into one of eight reasons. The distinction is the whole point — a spent allowance and a broken proxy call for opposite reactions, and collapsing them into one "update server unavailable" flag tells the user nothing they can act on.
 
@@ -121,7 +121,7 @@ A call that produces no answer is classified into one of eight reasons. The dist
 - `update_failure`: `{reason, message, retry_after, retryable}` on the check result, plus a warning line `update check failed (<reason>): <error>` in the log.
 - The gather continues. A check that could not be made is a fact about the installation, not a reason to abandon everything else the checker learned, so no other field is affected.
 - The update overview screen says the check did not complete and that applying an update will pull whatever the compose files currently point at. It must **never** print "Everything is up to date" — that sentence belongs to an answer that arrived and listed nothing.
-- The "Update Installer" entry disappears from Maintenance: it requires the server, and without a package description there is nothing that could be verified. The "Update PentAGI" entry stays **for any stack that is installed**, because none of them is known to be current — it leads to the overview, which says exactly that. On a machine with no compose stack installed the entry is absent whatever the check did: the offer is gated on a stack being installed *and* not up to date, so resetting the verdicts is only half of what makes it appear.
+- The "Update Installer" entry disappears from Maintenance: it requires the server, and without a package description there is nothing that could be verified. The "Update NullHawk" entry stays **for any stack that is installed**, because none of them is known to be current — it leads to the overview, which says exactly that. On a machine with no compose stack installed the entry is absent whatever the check did: the offer is gated on a stack being installed *and* not up to date, so resetting the verdicts is only half of what makes it appear.
 - The reason and the cooldown are what separate these scenarios; the overview's failure text is currently the same sentence for all of them. Assert the reason on the check result and in the log, not a per-reason wording that does not exist.
 
 ### 1. Update Server Unreachable
@@ -145,7 +145,7 @@ A configuration the client refuses to build with never becomes a call at all: `U
 - be assumed to have been retried. A timed-out challenge is not retried by the transport — if a retry is wanted, the installer has to make it.
 
 ### 3. Request Rate Limited
-**Setup**: several checks inside one rolling window. Note how easily this happens: each update step refreshes the answer in a deferred call, and updating everything recurses over the stacks — one press of "Update PentAGI" is therefore one check per stack touched, not one check. A limit sized for a single request breaks the client instead of throttling it.
+**Setup**: several checks inside one rolling window. Note how easily this happens: each update step refreshes the answer in a deferred call, and updating everything recurses over the stacks — one press of "Update NullHawk" is therefore one check per stack touched, not one check. A limit sized for a single request breaks the client instead of throttling it.
 **Expected**:
 - `update_failure.reason`: "rate_limited", `retryable`: true
 - `retry_after`: the server-advertised cooldown when it sent one, 0 otherwise. It is recorded on the check result and rendered nowhere — the overview prints its single failure sentence and the operation panel prints `failed to check updates: <message>`. Assert the value on the result, not a screen that tells the user when to come back: that screen does not exist yet.

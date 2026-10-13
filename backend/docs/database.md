@@ -2,7 +2,7 @@
 
 ## Overview
 
-PentAGI stores application state in PostgreSQL and uses the `vector` extension for agent memory and knowledge search. The database layer combines:
+NullHawk stores application state in PostgreSQL and uses the `vector` extension for agent memory and knowledge search. The database layer combines:
 
 - **sqlc v1.27.0** for the main type-safe query API (`backend/pkg/database`);
 - **GORM v1** (`github.com/jinzhu/gorm`) for HTTP server models and handlers (`backend/pkg/server/models`);
@@ -42,7 +42,7 @@ The process refuses to serve traffic after a tenant schema mismatch or a migrati
 
 ### Database clients and pools
 
-PentAGI opens two independent pools to the same PostgreSQL database:
+NullHawk opens two independent pools to the same PostgreSQL database:
 
 | Pool | Configuration | Default | Consumers |
 |---|---|---:|---|
@@ -60,9 +60,9 @@ During normal startup the shared pgx pool is stored in `cfg.PgxPool` and passed 
 
 ### Connection budget
 
-With the defaults, one PentAGI process can use up to 35 PostgreSQL connections: 25 through `database/sql` and 10 through `pgxpool`. This is a hard application budget, not a prediction of steady-state usage.
+With the defaults, one NullHawk process can use up to 35 PostgreSQL connections: 25 through `database/sql` and 10 through `pgxpool`. This is a hard application budget, not a prediction of steady-state usage.
 
-When several PentAGI instances share one database server, add both pool limits for every instance and leave capacity for PostgreSQL reserved connections, autovacuum, monitoring clients, platform services and administrative/migration sessions.
+When several NullHawk instances share one database server, add both pool limits for every instance and leave capacity for PostgreSQL reserved connections, autovacuum, monitoring clients, platform services and administrative/migration sessions.
 
 ```sql
 SELECT name, setting
@@ -176,7 +176,7 @@ Several log/artifact tables carry nullable `task_id` and `subtask_id` in additio
 | `langchain_pg_collection` | Logical pgvector collections (`name`, `cmetadata`, `uuid`) |
 | `langchain_pg_embedding` | Document text, vector embedding and JSON `cmetadata` |
 
-PentAGI uses the collection named `langchain`. Ownership and association are represented in `cmetadata` fields such as `user_id`, `flow_id`, `task_id`, `subtask_id`, `doc_type`, `question`, `description`, `guide_type`, `answer_type`, `code_lang`, chunk sizing and a `manual` flag. See `backend/pkg/database/knowledge`.
+NullHawk uses the collection named `langchain`. Ownership and association are represented in `cmetadata` fields such as `user_id`, `flow_id`, `task_id`, `subtask_id`, `doc_type`, `question`, `description`, `guide_type`, `answer_type`, `code_lang`, chunk sizing and a `manual` flag. See `backend/pkg/database/knowledge`.
 
 The knowledge query API excludes `doc_type = 'memory'` from user-managed knowledge listings/searches. GraphQL and REST flow-deletion paths issue an explicit best-effort deletion of memory rows (`DeleteFlowMemoryDocuments`); this is application behavior, not a database trigger or foreign-key cascade. The knowledge migration intentionally does not drop the LangChain tables on downgrade because they may contain production data managed by the vector store.
 
@@ -214,17 +214,17 @@ Important integrity constraints include unique user mail/hash values, one prompt
 
 ## Application Scoping and Deployment Tenancy
 
-PentAGI has two distinct isolation layers. They solve different problems and must not be confused.
+NullHawk has two distinct isolation layers. They solve different problems and must not be confused.
 
-### User scoping inside one PentAGI instance
+### User scoping inside one NullHawk instance
 
 Rows such as flows, providers, prompts, templates, resources and preferences carry `user_id` directly or are reached through a flow owned by a user. User-facing handlers select user-scoped sqlc methods such as `GetUserFlow` / `GetUserFlows`; admin paths may intentionally use unscoped variants such as `GetFlow` / `GetFlows`.
 
-This access control is implemented by application queries and privilege checks. PentAGI does not rely on PostgreSQL row-level security for its own tables.
+This access control is implemented by application queries and privilege checks. NullHawk does not rely on PostgreSQL row-level security for its own tables.
 
 ### Instance scoping with `TENANT_ID`
 
-`TENANT_ID` isolates independent PentAGI installations that share a PostgreSQL database. It creates one PostgreSQL schema per instance (`public` when empty, otherwise the tenant name). For a tenant, the effective search path is `<tenant>,<DATABASE_EXTENSIONS_SCHEMA>`.
+`TENANT_ID` isolates independent NullHawk installations that share a PostgreSQL database. It creates one PostgreSQL schema per instance (`public` when empty, otherwise the tenant name). For a tenant, the effective search path is `<tenant>,<DATABASE_EXTENSIONS_SCHEMA>`.
 
 Tenant bootstrap (`backend/pkg/database/tenant.go`):
 
@@ -250,7 +250,7 @@ var EmbedMigrations embed.FS
 
 At startup goose uses that filesystem and runs `goose.Up`. Migrations use goose `Up`/`Down` annotations and numeric filename prefixes. The current migration head is determined by the newest migration file; do not hard-code it in application logic.
 
-PentAGI serializes:
+NullHawk serializes:
 
 1. tenant schema/extension bootstrap with the `pentagi-tenant-bootstrap` advisory lock;
 2. migrations with a schema-specific `pentagi-migrations-<schema>` advisory lock.
@@ -312,7 +312,7 @@ The generated `Querier` interface in `backend/pkg/database/querier.go` currently
 
 ### Regeneration
 
-From `backend/`, with the PentAGI PostgreSQL network available:
+From `backend/`, with the NullHawk PostgreSQL network available:
 
 ```bash
 docker run --rm \
@@ -415,7 +415,7 @@ Representative GORM model surfaces in `backend/pkg/server/models/` include users
 
 ## Vector Operations
 
-PentAGI requires:
+NullHawk requires:
 
 - `vector` for embeddings and cosine-distance search;
 - `pg_trgm` for GIN trigram indexes on message/log text.
@@ -450,7 +450,7 @@ Aggregates in `toolcalls.sql`: per flow/task/subtask, all flows, by function (gl
 
 ## Indexing and Performance
 
-PostgreSQL automatically indexes primary keys and unique constraints. It does **not** automatically index foreign-key columns; PentAGI migrations create the needed foreign-key and query-pattern indexes explicitly.
+PostgreSQL automatically indexes primary keys and unique constraints. It does **not** automatically index foreign-key columns; NullHawk migrations create the needed foreign-key and query-pattern indexes explicitly.
 
 Current migrations include:
 
