@@ -93,12 +93,15 @@ func NormalizeTarget(raw string) (string, error) {
 }
 
 // isDNSName reports whether s is a syntactically valid dotted hostname: at least
-// two labels, each 1-63 chars of [a-z0-9-], not starting or ending with a hyphen.
+// two labels, each 1-63 chars of [a-z0-9-], not starting or ending with a hyphen,
+// and a final label (the TLD) that is at least two chars and not all-numeric — the
+// last rule keeps version strings like "v2.0" from being read as domains.
 func isDNSName(s string) bool {
 	if len(s) > 253 || !strings.Contains(s, ".") {
 		return false
 	}
-	for _, label := range strings.Split(s, ".") {
+	labels := strings.Split(s, ".")
+	for _, label := range labels {
 		if l := len(label); l == 0 || l > 63 {
 			return false
 		}
@@ -112,7 +115,18 @@ func isDNSName(s string) bool {
 			}
 		}
 	}
-	return true
+	tld := labels[len(labels)-1]
+	if len(tld) < 2 {
+		return false
+	}
+	allDigits := true
+	for i := 0; i < len(tld); i++ {
+		if tld[i] < '0' || tld[i] > '9' {
+			allDigits = false
+			break
+		}
+	}
+	return !allDigits
 }
 
 // TXTLookuper reads the TXT records at a name. It is the single seam the DNS
