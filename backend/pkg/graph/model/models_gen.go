@@ -659,6 +659,19 @@ type VectorStoreLog struct {
 	CreatedAt time.Time         `json:"createdAt"`
 }
 
+type VerifiedTarget struct {
+	ID         int64                    `json:"id"`
+	Target     string                   `json:"target"`
+	Method     TargetVerificationMethod `json:"method"`
+	Token      string                   `json:"token"`
+	Status     TargetVerificationStatus `json:"status"`
+	LastError  *string                  `json:"lastError,omitempty"`
+	VerifiedAt *time.Time               `json:"verifiedAt,omitempty"`
+	ExpiresAt  *time.Time               `json:"expiresAt,omitempty"`
+	CreatedAt  time.Time                `json:"createdAt"`
+	UpdatedAt  time.Time                `json:"updatedAt"`
+}
+
 type VersionInfo struct {
 	Current   string      `json:"current"`
 	Build     string      `json:"build"`
@@ -1487,6 +1500,96 @@ func (e *StatusType) UnmarshalGQL(v interface{}) error {
 }
 
 func (e StatusType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type TargetVerificationMethod string
+
+const (
+	TargetVerificationMethodDNSTxt   TargetVerificationMethod = "dns_txt"
+	TargetVerificationMethodHTTPFile TargetVerificationMethod = "http_file"
+	TargetVerificationMethodEmail    TargetVerificationMethod = "email"
+)
+
+var AllTargetVerificationMethod = []TargetVerificationMethod{
+	TargetVerificationMethodDNSTxt,
+	TargetVerificationMethodHTTPFile,
+	TargetVerificationMethodEmail,
+}
+
+func (e TargetVerificationMethod) IsValid() bool {
+	switch e {
+	case TargetVerificationMethodDNSTxt, TargetVerificationMethodHTTPFile, TargetVerificationMethodEmail:
+		return true
+	}
+	return false
+}
+
+func (e TargetVerificationMethod) String() string {
+	return string(e)
+}
+
+func (e *TargetVerificationMethod) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = TargetVerificationMethod(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid TargetVerificationMethod", str)
+	}
+	return nil
+}
+
+func (e TargetVerificationMethod) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type TargetVerificationStatus string
+
+const (
+	TargetVerificationStatusPending  TargetVerificationStatus = "pending"
+	TargetVerificationStatusVerified TargetVerificationStatus = "verified"
+	TargetVerificationStatusFailed   TargetVerificationStatus = "failed"
+	TargetVerificationStatusRevoked  TargetVerificationStatus = "revoked"
+	TargetVerificationStatusExpired  TargetVerificationStatus = "expired"
+)
+
+var AllTargetVerificationStatus = []TargetVerificationStatus{
+	TargetVerificationStatusPending,
+	TargetVerificationStatusVerified,
+	TargetVerificationStatusFailed,
+	TargetVerificationStatusRevoked,
+	TargetVerificationStatusExpired,
+}
+
+func (e TargetVerificationStatus) IsValid() bool {
+	switch e {
+	case TargetVerificationStatusPending, TargetVerificationStatusVerified, TargetVerificationStatusFailed, TargetVerificationStatusRevoked, TargetVerificationStatusExpired:
+		return true
+	}
+	return false
+}
+
+func (e TargetVerificationStatus) String() string {
+	return string(e)
+}
+
+func (e *TargetVerificationStatus) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = TargetVerificationStatus(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid TargetVerificationStatus", str)
+	}
+	return nil
+}
+
+func (e TargetVerificationStatus) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

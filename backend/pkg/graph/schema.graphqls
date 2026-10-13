@@ -479,6 +479,35 @@ input UpdateAPITokenInput {
   status: TokenStatus
 }
 
+# ==================== Target Verification Types ====================
+
+enum TargetVerificationMethod {
+  dns_txt
+  http_file
+  email
+}
+
+enum TargetVerificationStatus {
+  pending
+  verified
+  failed
+  revoked
+  expired
+}
+
+type VerifiedTarget {
+  id: ID!
+  target: String!
+  method: TargetVerificationMethod!
+  token: String!
+  status: TargetVerificationStatus!
+  lastError: String
+  verifiedAt: Time
+  expiresAt: Time
+  createdAt: Time!
+  updatedAt: Time!
+}
+
 # ==================== Prompt Management Types ====================
 
 # Validation error types for user-provided prompts
@@ -1059,6 +1088,9 @@ type Query {
   apiToken(tokenId: String!): APIToken
   apiTokens: [APIToken!]!
 
+  # Target verification
+  verifiedTargets: [VerifiedTarget!]!
+
   # Flow Templates management
   flowTemplate(templateId: ID!): FlowTemplate
   flowTemplates: [FlowTemplate!]!
@@ -1120,6 +1152,11 @@ type Mutation {
   renameKnowledgeDocument(id: String!, question: String!): KnowledgeDocument!
   deleteKnowledgeDocument(id: String!): ResultType!
   anonymizeText(text: String!): String!
+
+  # Target verification
+  requestTargetVerification(target: String!, method: TargetVerificationMethod!): VerifiedTarget!
+  checkTargetVerification(id: ID!): VerifiedTarget!
+  deleteVerifiedTarget(id: ID!): ResultType!
 }
 
 type Subscription {
