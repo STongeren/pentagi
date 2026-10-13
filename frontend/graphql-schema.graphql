@@ -401,6 +401,19 @@ fragment apiTokenWithSecretFragment on APITokenWithSecret {
     token
 }
 
+fragment verifiedTargetFragment on VerifiedTarget {
+    id
+    target
+    method
+    token
+    status
+    lastError
+    verifiedAt
+    expiresAt
+    createdAt
+    updatedAt
+}
+
 fragment flowTemplateFragment on FlowTemplate {
     id
     userId
@@ -1022,6 +1035,12 @@ query apiToken($tokenId: String!) {
     }
 }
 
+query verifiedTargets {
+    verifiedTargets {
+        ...verifiedTargetFragment
+    }
+}
+
 # ==================== Knowledge ====================
 
 query knowledgeDocuments($filter: KnowledgeFilter, $withContent: Boolean!) {
@@ -1216,6 +1235,22 @@ mutation updateAPIToken($tokenId: String!, $input: UpdateAPITokenInput!) {
 
 mutation deleteAPIToken($tokenId: String!) {
     deleteAPIToken(tokenId: $tokenId)
+}
+
+mutation requestTargetVerification($target: String!, $method: TargetVerificationMethod!) {
+    requestTargetVerification(target: $target, method: $method) {
+        ...verifiedTargetFragment
+    }
+}
+
+mutation checkTargetVerification($id: ID!) {
+    checkTargetVerification(id: $id) {
+        ...verifiedTargetFragment
+    }
+}
+
+mutation deleteVerifiedTarget($id: ID!) {
+    deleteVerifiedTarget(id: $id)
 }
 
 mutation createKnowledgeDocument($input: CreateKnowledgeDocumentInput!) {

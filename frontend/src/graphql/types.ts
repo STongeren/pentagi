@@ -259,6 +259,20 @@ export enum StatusType {
     Waiting = 'waiting',
 }
 
+export enum TargetVerificationMethod {
+    DnsTxt = 'dns_txt',
+    Email = 'email',
+    HttpFile = 'http_file',
+}
+
+export enum TargetVerificationStatus {
+    Expired = 'expired',
+    Failed = 'failed',
+    Pending = 'pending',
+    Revoked = 'revoked',
+    Verified = 'verified',
+}
+
 export enum TerminalLogType {
     Stderr = 'stderr',
     Stdin = 'stdin',
@@ -628,6 +642,19 @@ export type ApiTokenWithSecretFragmentFragment = {
     createdAt: string;
     updatedAt: string;
     token: string;
+};
+
+export type VerifiedTargetFragmentFragment = {
+    id: string;
+    target: string;
+    method: TargetVerificationMethod;
+    token: string;
+    status: TargetVerificationStatus;
+    lastError: string | null;
+    verifiedAt: string | null;
+    expiresAt: string | null;
+    createdAt: string;
+    updatedAt: string;
 };
 
 export type FlowTemplateFragmentFragment = {
@@ -1007,6 +1034,10 @@ export type ApiTokenQueryVariables = Exact<{
 
 export type ApiTokenQuery = { apiToken: ApiTokenFragmentFragment | null };
 
+export type VerifiedTargetsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type VerifiedTargetsQuery = { verifiedTargets: Array<VerifiedTargetFragmentFragment> };
+
 export type KnowledgeDocumentsQueryVariables = Exact<{
     filter?: KnowledgeFilter | null | undefined;
     withContent: boolean;
@@ -1242,6 +1273,25 @@ export type DeleteApiTokenMutationVariables = Exact<{
 }>;
 
 export type DeleteApiTokenMutation = { deleteAPIToken: boolean };
+
+export type RequestTargetVerificationMutationVariables = Exact<{
+    target: string;
+    method: TargetVerificationMethod;
+}>;
+
+export type RequestTargetVerificationMutation = { requestTargetVerification: VerifiedTargetFragmentFragment };
+
+export type CheckTargetVerificationMutationVariables = Exact<{
+    id: string | number;
+}>;
+
+export type CheckTargetVerificationMutation = { checkTargetVerification: VerifiedTargetFragmentFragment };
+
+export type DeleteVerifiedTargetMutationVariables = Exact<{
+    id: string | number;
+}>;
+
+export type DeleteVerifiedTargetMutation = { deleteVerifiedTarget: ResultType };
 
 export type CreateKnowledgeDocumentMutationVariables = Exact<{
     input: CreateKnowledgeDocumentInput;
@@ -2792,6 +2842,31 @@ export const ApiTokenWithSecretFragmentFragmentDoc = {
         },
     ],
 } as unknown as DocumentNode<ApiTokenWithSecretFragmentFragment, unknown>;
+export const VerifiedTargetFragmentFragmentDoc = {
+    kind: 'Document',
+    definitions: [
+        {
+            kind: 'FragmentDefinition',
+            name: { kind: 'Name', value: 'verifiedTargetFragment' },
+            typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'VerifiedTarget' } },
+            selectionSet: {
+                kind: 'SelectionSet',
+                selections: [
+                    { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'target' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'method' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'token' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'lastError' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'verifiedAt' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'expiresAt' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } },
+                ],
+            },
+        },
+    ],
+} as unknown as DocumentNode<VerifiedTargetFragmentFragment, unknown>;
 export const FlowTemplateFragmentFragmentDoc = {
     kind: 'Document',
     definitions: [
@@ -7234,6 +7309,51 @@ export const ApiTokenDocument = {
         },
     ],
 } as unknown as DocumentNode<ApiTokenQuery, ApiTokenQueryVariables>;
+export const VerifiedTargetsDocument = {
+    kind: 'Document',
+    definitions: [
+        {
+            kind: 'OperationDefinition',
+            operation: 'query',
+            name: { kind: 'Name', value: 'verifiedTargets' },
+            selectionSet: {
+                kind: 'SelectionSet',
+                selections: [
+                    {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'verifiedTargets' },
+                        selectionSet: {
+                            kind: 'SelectionSet',
+                            selections: [
+                                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'verifiedTargetFragment' } },
+                            ],
+                        },
+                    },
+                ],
+            },
+        },
+        {
+            kind: 'FragmentDefinition',
+            name: { kind: 'Name', value: 'verifiedTargetFragment' },
+            typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'VerifiedTarget' } },
+            selectionSet: {
+                kind: 'SelectionSet',
+                selections: [
+                    { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'target' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'method' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'token' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'lastError' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'verifiedAt' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'expiresAt' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } },
+                ],
+            },
+        },
+    ],
+} as unknown as DocumentNode<VerifiedTargetsQuery, VerifiedTargetsQueryVariables>;
 export const KnowledgeDocumentsDocument = {
     kind: 'Document',
     definitions: [
@@ -9937,6 +10057,170 @@ export const DeleteApiTokenDocument = {
         },
     ],
 } as unknown as DocumentNode<DeleteApiTokenMutation, DeleteApiTokenMutationVariables>;
+export const RequestTargetVerificationDocument = {
+    kind: 'Document',
+    definitions: [
+        {
+            kind: 'OperationDefinition',
+            operation: 'mutation',
+            name: { kind: 'Name', value: 'requestTargetVerification' },
+            variableDefinitions: [
+                {
+                    kind: 'VariableDefinition',
+                    variable: { kind: 'Variable', name: { kind: 'Name', value: 'target' } },
+                    type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+                },
+                {
+                    kind: 'VariableDefinition',
+                    variable: { kind: 'Variable', name: { kind: 'Name', value: 'method' } },
+                    type: {
+                        kind: 'NonNullType',
+                        type: { kind: 'NamedType', name: { kind: 'Name', value: 'TargetVerificationMethod' } },
+                    },
+                },
+            ],
+            selectionSet: {
+                kind: 'SelectionSet',
+                selections: [
+                    {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'requestTargetVerification' },
+                        arguments: [
+                            {
+                                kind: 'Argument',
+                                name: { kind: 'Name', value: 'target' },
+                                value: { kind: 'Variable', name: { kind: 'Name', value: 'target' } },
+                            },
+                            {
+                                kind: 'Argument',
+                                name: { kind: 'Name', value: 'method' },
+                                value: { kind: 'Variable', name: { kind: 'Name', value: 'method' } },
+                            },
+                        ],
+                        selectionSet: {
+                            kind: 'SelectionSet',
+                            selections: [
+                                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'verifiedTargetFragment' } },
+                            ],
+                        },
+                    },
+                ],
+            },
+        },
+        {
+            kind: 'FragmentDefinition',
+            name: { kind: 'Name', value: 'verifiedTargetFragment' },
+            typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'VerifiedTarget' } },
+            selectionSet: {
+                kind: 'SelectionSet',
+                selections: [
+                    { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'target' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'method' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'token' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'lastError' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'verifiedAt' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'expiresAt' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } },
+                ],
+            },
+        },
+    ],
+} as unknown as DocumentNode<RequestTargetVerificationMutation, RequestTargetVerificationMutationVariables>;
+export const CheckTargetVerificationDocument = {
+    kind: 'Document',
+    definitions: [
+        {
+            kind: 'OperationDefinition',
+            operation: 'mutation',
+            name: { kind: 'Name', value: 'checkTargetVerification' },
+            variableDefinitions: [
+                {
+                    kind: 'VariableDefinition',
+                    variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+                    type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+                },
+            ],
+            selectionSet: {
+                kind: 'SelectionSet',
+                selections: [
+                    {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'checkTargetVerification' },
+                        arguments: [
+                            {
+                                kind: 'Argument',
+                                name: { kind: 'Name', value: 'id' },
+                                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+                            },
+                        ],
+                        selectionSet: {
+                            kind: 'SelectionSet',
+                            selections: [
+                                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'verifiedTargetFragment' } },
+                            ],
+                        },
+                    },
+                ],
+            },
+        },
+        {
+            kind: 'FragmentDefinition',
+            name: { kind: 'Name', value: 'verifiedTargetFragment' },
+            typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'VerifiedTarget' } },
+            selectionSet: {
+                kind: 'SelectionSet',
+                selections: [
+                    { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'target' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'method' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'token' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'lastError' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'verifiedAt' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'expiresAt' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+                    { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } },
+                ],
+            },
+        },
+    ],
+} as unknown as DocumentNode<CheckTargetVerificationMutation, CheckTargetVerificationMutationVariables>;
+export const DeleteVerifiedTargetDocument = {
+    kind: 'Document',
+    definitions: [
+        {
+            kind: 'OperationDefinition',
+            operation: 'mutation',
+            name: { kind: 'Name', value: 'deleteVerifiedTarget' },
+            variableDefinitions: [
+                {
+                    kind: 'VariableDefinition',
+                    variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+                    type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+                },
+            ],
+            selectionSet: {
+                kind: 'SelectionSet',
+                selections: [
+                    {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'deleteVerifiedTarget' },
+                        arguments: [
+                            {
+                                kind: 'Argument',
+                                name: { kind: 'Name', value: 'id' },
+                                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+                            },
+                        ],
+                    },
+                ],
+            },
+        },
+    ],
+} as unknown as DocumentNode<DeleteVerifiedTargetMutation, DeleteVerifiedTargetMutationVariables>;
 export const CreateKnowledgeDocumentDocument = {
     kind: 'Document',
     definitions: [

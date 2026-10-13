@@ -44,6 +44,7 @@ export const routes = {
         provider: (id: string) => `/settings/providers/${id}`,
         providers: '/settings/providers',
         root: '/settings',
+        targets: '/settings/targets',
     },
 
     template: (id: number | string) => `/templates/${id}`,
