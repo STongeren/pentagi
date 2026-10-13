@@ -1,0 +1,225 @@
+<title>NullHawk Onboarding</title>
+<style>
+  /* Layout: a 4-step onboarding wizard — committed dark (NullHawk black & red) */
+  :root{
+    --bg:#09090b;--surface:#111114;--surface-2:#17171b;--line:#26262c;--line-red:rgba(255,43,62,.28);
+    --fg:#eceae7;--muted:#908d8a;--faint:#5d5b5a;--red:#ff2b3e;--red-glow:rgba(255,43,62,.4);
+    --green:#30d158;--amber:#ffb020;color-scheme:dark;
+    --f-display:"Chakra Petch",system-ui,sans-serif;--f-body:"IBM Plex Sans",system-ui,sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);line-height:1.6;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(800px 420px at 85% -5%, rgba(255,43,62,.09), transparent 60%);min-height:100%}
+  .wrap{max-width:720px;margin-inline:auto;padding:28px 20px 60px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:700;font-size:1.05rem;margin-bottom:30px}
+  .brand svg{width:26px;height:26px;filter:drop-shadow(0 0 6px var(--red-glow))}
+  .brand b{color:var(--red)}
+  h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+  .mono{font-family:var(--f-mono)}
+
+  /* stepper */
+  .steps{display:flex;gap:8px;margin-bottom:30px}
+  .sdot{flex:1;height:4px;border-radius:2px;background:var(--line);transition:.3s}
+  .sdot.done{background:var(--red-glow)}
+  .sdot.active{background:var(--red)}
+  .stepmeta{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:10px}
+
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:clamp(22px,4vw,34px)}
+  .panel h2{font-size:1.5rem;margin-bottom:8px}
+  .panel .desc{color:var(--muted);margin-bottom:24px;max-width:56ch}
+
+  label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:7px;font-weight:600}
+  input[type=text],input[type=email],input[type=password],textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;
+    color:var(--fg);font-family:var(--f-body);font-size:.95rem;padding:12px 14px}
+  input:focus,textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 1px var(--red-glow)}
+  textarea{resize:vertical;min-height:90px;font-family:var(--f-mono);font-size:.88rem}
+  .field{margin-bottom:18px}
+
+  .btn{font-family:var(--f-mono);font-size:.88rem;padding:12px 22px;border-radius:7px;border:1px solid transparent;cursor:pointer;transition:.15s}
+  .btn-primary{background:var(--red);color:#fff}
+  .btn-primary:hover{background:#ff3d4e}
+  .btn-primary:disabled{background:var(--surface-2);color:var(--faint);cursor:not-allowed}
+  .btn-ghost{background:var(--bg);border-color:var(--line);color:var(--fg)}
+  .btn-ghost:hover{border-color:var(--muted)}
+  .row{display:flex;gap:12px;align-items:center;margin-top:26px;flex-wrap:wrap}
+  .row .spacer{flex:1}
+
+  /* verify step */
+  .tokbox{background:#0c0c0e;border:1px solid var(--line);border-radius:9px;padding:16px;margin:16px 0;font-family:var(--f-mono);font-size:.84rem;position:relative}
+  .tokbox .k{color:var(--faint);display:block;margin-bottom:8px;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
+  .tokbox .v{color:var(--red);word-break:break-all;display:block;padding-right:70px}
+  .copy{position:absolute;top:12px;right:12px;font-family:var(--f-mono);font-size:.72rem;color:var(--faint);border:1px solid var(--line);background:var(--surface);border-radius:4px;padding:5px 10px;cursor:pointer}
+  .copy:hover{color:var(--fg);border-color:var(--muted)}
+  .status{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:.85rem;margin-top:14px;min-height:22px}
+  .status .ok{color:var(--green)}.status .wait{color:var(--amber)}.status .idle{color:var(--faint)}
+  .seg{display:flex;gap:8px;margin-bottom:18px}
+  .seg button{flex:1;background:var(--bg);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:11px;cursor:pointer;font-family:var(--f-mono);font-size:.82rem}
+  .seg button.sel{border-color:var(--red);color:var(--fg);background:rgba(255,43,62,.06)}
+  .hint{font-size:.8rem;color:var(--faint);margin-top:8px}
+  .note{background:rgba(255,176,32,.08);border:1px solid rgba(255,176,32,.25);border-radius:8px;padding:12px 14px;font-size:.84rem;color:#f0d9a8;margin-top:18px}
+
+  /* done */
+  .done{text-align:center;padding:10px 0}
+  .done .ring{width:66px;height:66px;border-radius:50%;background:rgba(48,209,88,.12);border:1px solid rgba(48,209,88,.4);color:var(--green);display:grid;place-items:center;margin:0 auto 18px}
+  .summary{text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:18px;margin-top:22px;font-family:var(--f-mono);font-size:.85rem}
+  .summary div{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid var(--line)}
+  .summary div:last-child{border-bottom:0}
+  .summary .lab{color:var(--faint)}.summary .val{color:var(--fg);text-align:right;word-break:break-all}
+  .prototype{text-align:center;font-family:var(--f-mono);font-size:.72rem;color:var(--faint);margin-top:28px;letter-spacing:.08em}
+  :focus-visible{outline:2px solid var(--red);outline-offset:2px}
+</style>
+
+<div class="wrap">
+  <div class="brand">
+    <svg viewBox="0 0 160 160" fill="var(--red)" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M80 12 L144 34 L144 84 C144 114 116 136 80 150 C44 136 16 114 16 84 L16 34 Z M80 36 L74 46 L80 52 L86 46 Z M76 56 L44 44 L58 60 L38 56 L62 74 L76 72 Z M84 56 L116 44 L102 60 L122 56 L98 74 L84 72 Z M73 70 L87 70 L84 108 L80 124 L76 108 Z"/></svg>
+    Null<b>Hawk</b>
+  </div>
+
+  <div class="steps" id="steps">
+    <div class="sdot active"></div><div class="sdot"></div><div class="sdot"></div><div class="sdot"></div>
+  </div>
+
+  <!-- STEP 1: account -->
+  <div class="panel" id="p0">
+    <div class="stepmeta">Step 1 of 4 · Account</div>
+    <h2>Create your account</h2>
+    <p class="desc">Self-serve signup for individual researchers. Start a 14-day free trial — no card required.</p>
+    <div class="field"><label>Work email</label><input type="email" id="email" placeholder="you@researcher.dev" value="alex@bughunter.dev"></div>
+    <div class="field"><label>Password</label><input type="password" id="pw" placeholder="16+ characters" value="correct-horse-battery-staple"></div>
+    <div class="row"><div class="spacer"></div><button class="btn btn-primary" onclick="next(0)">Create account →</button></div>
+  </div>
+
+  <!-- STEP 2: verify target -->
+  <div class="panel" id="p1" hidden>
+    <div class="stepmeta">Step 2 of 4 · Authorization</div>
+    <h2>Verify a target you own</h2>
+    <p class="desc">NullHawk only runs against targets you've proven you control. This is what keeps you — and us — on the right side of the law. Pick a method.</p>
+    <div class="seg">
+      <button class="sel" id="m-dns" onclick="setMethod('dns')">DNS TXT</button>
+      <button id="m-file" onclick="setMethod('file')">HTML file</button>
+      <button id="m-ip" onclick="setMethod('ip')">IP range</button>
+    </div>
+    <div class="field"><label id="tgtlabel">Domain to verify</label><input type="text" id="target" placeholder="example.com" value="acme-staging.dev"></div>
+
+    <div id="verifyBody">
+      <div class="tokbox">
+        <span class="k" id="tokhow">Add this DNS TXT record to your domain</span>
+        <span class="v" id="token">nullhawk-verify=7f3a9c2e-site-ownership</span>
+        <button class="copy" onclick="copyTok()">copy</button>
+      </div>
+      <div class="status" id="vstatus"><span class="idle">Not verified yet — add the record, then check.</span></div>
+    </div>
+
+    <div class="note">⚠️ Flows are blocked until at least one target is verified. Scanning anything you don't own violates the Acceptable Use Policy and the law.</div>
+    <div class="row">
+      <button class="btn btn-ghost" onclick="back(1)">← Back</button>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost" onclick="checkVerify()" id="checkBtn">Check verification</button>
+      <button class="btn btn-primary" id="v-next" onclick="next(1)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: LLM key -->
+  <div class="panel" id="p2" hidden>
+    <div class="stepmeta">Step 3 of 4 · Model</div>
+    <h2>Connect a model</h2>
+    <p class="desc">Bring your own LLM key — it stays in your tenant, keeps your costs transparent, and never touches our billing. Or use metered NullHawk credits.</p>
+    <div class="seg">
+      <button class="sel" id="k-byo" onclick="setKeyMode('byo')">Bring your own key</button>
+      <button id="k-credits" onclick="setKeyMode('credits')">Metered credits</button>
+    </div>
+    <div id="byoBody">
+      <div class="field"><label>Provider</label><input type="text" id="provider" value="Anthropic (Claude)" readonly></div>
+      <div class="field"><label>API key</label><input type="password" id="llmkey" placeholder="sk-ant-..." value="sk-ant-xxxxxxxxxxxxxxxx"></div>
+      <p class="hint">Stored encrypted, scoped to your tenant. Supports Anthropic, OpenAI, Gemini, Ollama and more.</p>
+    </div>
+    <div id="creditsBody" hidden>
+      <div class="note" style="background:rgba(255,43,62,.06);border-color:var(--line-red);color:var(--muted)">Credits are billed per 1K tokens on top of your plan. Handy if you don't want to manage a provider key.</div>
+    </div>
+    <div class="row"><button class="btn btn-ghost" onclick="back(2)">← Back</button><div class="spacer"></div><button class="btn btn-primary" onclick="next(2)">Continue →</button></div>
+  </div>
+
+  <!-- STEP 4: first flow -->
+  <div class="panel" id="p3" hidden>
+    <div class="stepmeta">Step 4 of 4 · Launch</div>
+    <h2>Your first flow</h2>
+    <p class="desc">Describe the target and goal in plain language. NullHawk's agents plan it, run the tools in an isolated sandbox, and report back.</p>
+    <div class="field"><label>Target (verified)</label><input type="text" id="flowtarget" readonly></div>
+    <div class="field"><label>Objective</label><textarea id="goal">Map the web app, enumerate endpoints, and find and verify authentication flaws. Report with severity and reproduction steps.</textarea></div>
+    <div class="row"><button class="btn btn-ghost" onclick="back(3)">← Back</button><div class="spacer"></div><button class="btn btn-primary" onclick="finish()">Launch flow ▸</button></div>
+  </div>
+
+  <!-- DONE -->
+  <div class="panel" id="p4" hidden>
+    <div class="done">
+      <div class="ring"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m4 12 5 5 11-12"/></svg></div>
+      <h2>You're live 🦅</h2>
+      <p class="desc" style="margin-inline:auto">Your first flow is queued. You'll watch the agents work in real time, then get a report.</p>
+      <div class="summary" id="sum"></div>
+    </div>
+    <div class="row"><div class="spacer"></div><button class="btn btn-ghost" onclick="reset()">↺ Restart demo</button><button class="btn btn-primary" onclick="reset()">Open dashboard →</button></div>
+  </div>
+
+  <p class="prototype">// Interactive prototype of the NullHawk onboarding — the target-verification gate is the real product constraint, not a mockup detail.</p>
+</div>
+
+<script>
+  var cur=0, method='dns', keyMode='byo', verified=false;
+  var panels=['p0','p1','p2','p3','p4'];
+  function show(i){
+    cur=i;
+    panels.forEach(function(id,idx){document.getElementById(id).hidden = idx!==i;});
+    var dots=document.querySelectorAll('#steps .sdot');
+    dots.forEach(function(d,idx){d.className='sdot'+(idx<Math.min(i,4)?' done':'')+(idx===i&&i<4?' active':'');});
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function next(from){ show(from+1); if(from+1===3){ document.getElementById('flowtarget').value=document.getElementById('target').value; } }
+  function back(from){ show(from-1); }
+  function setMethod(m){
+    method=m; verified=false; document.getElementById('v-next').disabled=true;
+    ['dns','file','ip'].forEach(function(x){document.getElementById('m-'+x).className=(x===m?'sel':'');});
+    var lab=document.getElementById('tgtlabel'), how=document.getElementById('tokhow'), tok=document.getElementById('token'), st=document.getElementById('vstatus');
+    if(m==='dns'){lab.textContent='Domain to verify';how.textContent='Add this DNS TXT record to your domain';tok.textContent='nullhawk-verify=7f3a9c2e-site-ownership';}
+    if(m==='file'){lab.textContent='Domain to verify';how.textContent='Host this file at /.well-known/nullhawk.txt';tok.textContent='7f3a9c2e-site-ownership';}
+    if(m==='ip'){lab.textContent='IP or CIDR range';how.textContent='Confirm from an IP inside the range, or add a reverse-DNS token';tok.textContent='nullhawk-verify=7f3a9c2e-ip-ownership';}
+    st.innerHTML='<span class="idle">Not verified yet — add the record, then check.</span>';
+  }
+  function copyTok(){
+    var t=document.getElementById('token').textContent;
+    try{navigator.clipboard.writeText(t).then(function(){flash('copied');}).catch(sel);}catch(e){sel();}
+    function sel(){var r=document.createRange();r.selectNode(document.getElementById('token'));var s=getSelection();s.removeAllRanges();s.addRange(r);flash('select+copy');}
+    function flash(x){var b=event.target;var o=b.textContent;b.textContent=x;setTimeout(function(){b.textContent=o;},1400);}
+  }
+  function checkVerify(){
+    var st=document.getElementById('vstatus');
+    st.innerHTML='<span class="wait">⟳ Querying DNS for the token…</span>';
+    document.getElementById('checkBtn').disabled=true;
+    setTimeout(function(){
+      verified=true;
+      st.innerHTML='<span class="ok">✓ Verified — you control '+ (document.getElementById('target').value||'this target') +'</span>';
+      document.getElementById('v-next').disabled=false;
+      document.getElementById('checkBtn').disabled=false;
+    },1300);
+  }
+  function setKeyMode(m){
+    keyMode=m;
+    document.getElementById('k-byo').className=(m==='byo'?'sel':'');
+    document.getElementById('k-credits').className=(m==='credits'?'sel':'');
+    document.getElementById('byoBody').hidden=(m!=='byo');
+    document.getElementById('creditsBody').hidden=(m==='byo');
+  }
+  function finish(){
+    var sum=document.getElementById('sum');
+    var model = keyMode==='byo' ? 'Anthropic (your key)' : 'Metered credits';
+    sum.innerHTML =
+      '<div><span class="lab">Account</span><span class="val">'+val('email')+'</span></div>'+
+      '<div><span class="lab">Verified target</span><span class="val">'+val('target')+' ✓</span></div>'+
+      '<div><span class="lab">Method</span><span class="val">'+method.toUpperCase()+'</span></div>'+
+      '<div><span class="lab">Model</span><span class="val">'+model+'</span></div>'+
+      '<div><span class="lab">Plan</span><span class="val">Trial (14 days)</span></div>';
+    show(4);
+  }
+  function val(id){return (document.getElementById(id).value||'—');}
+  function reset(){ setMethod('dns'); setKeyMode('byo'); show(0); }
+</script>

@@ -1,0 +1,168 @@
+<title>NullHawk Go-to-Market</title>
+<style>
+  /* Layout: tactical brief — committed dark (NullHawk black & red identity) */
+  :root{
+    --bg:#09090b;--surface:#111114;--surface-2:#17171b;--line:#26262c;--line-red:rgba(255,43,62,.28);
+    --fg:#eceae7;--muted:#908d8a;--faint:#5d5b5a;--red:#ff2b3e;--red-deep:#b00617;--red-glow:rgba(255,43,62,.4);
+    --amber:#ffb020;--green:#30d158;--blue:#7fb8ff;color-scheme:dark;
+    --f-display:"Chakra Petch",system-ui,sans-serif;--f-body:"IBM Plex Sans",system-ui,sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+    --maxw:960px;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--fg);font-family:var(--f-body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:radial-gradient(900px 480px at 85% -5%, rgba(255,43,62,.09), transparent 60%);}
+  .wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:20px}
+  h1,h2,h3{font-family:var(--f-display);font-weight:700;text-wrap:balance;margin:0;letter-spacing:-.01em}
+  p{margin:0}a{color:var(--red)}
+  .mono{font-family:var(--f-mono)}
+  .eyebrow{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;color:var(--red);display:inline-flex;align-items:center;gap:.6em}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--red)}
+
+  header{padding-block:clamp(40px,7vw,72px) 28px}
+  .brand{display:flex;align-items:center;gap:11px;font-family:var(--f-display);font-weight:700;font-size:1.05rem;margin-bottom:28px}
+  .brand svg{width:26px;height:26px;filter:drop-shadow(0 0 6px var(--red-glow))}
+  .brand b{color:var(--red)}
+  h1{font-size:clamp(2rem,5vw,3.1rem);line-height:1.05;margin-top:16px}
+  .sub{color:var(--muted);font-size:1.08rem;margin-top:16px;max-width:60ch}
+  .meta{font-family:var(--f-mono);font-size:.76rem;color:var(--faint);margin-top:18px;letter-spacing:.06em}
+
+  section{padding-block:clamp(26px,4vw,40px);border-top:1px solid var(--line)}
+  h2{font-size:clamp(1.4rem,3vw,1.9rem);margin-bottom:6px}
+  .lead{color:var(--muted);margin-bottom:22px;max-width:62ch}
+
+  .callout{background:linear-gradient(180deg,rgba(255,43,62,.08),transparent);border:1px solid var(--line-red);border-radius:12px;padding:clamp(20px,3.5vw,30px);display:grid;grid-template-columns:auto 1fr;gap:20px}
+  @media(max-width:560px){.callout{grid-template-columns:1fr}}
+  .callout .bz{width:48px;height:48px;border-radius:11px;display:grid;place-items:center;background:rgba(255,43,62,.13);border:1px solid var(--line-red);color:var(--red)}
+  .callout h2{font-size:1.3rem}
+  .callout p{color:var(--muted);margin-top:10px;max-width:64ch}
+  .callout strong{color:var(--fg)}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:620px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;min-width:0}
+  .card .tag{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;display:inline-block;margin-bottom:12px}
+  .t-have{color:var(--green);background:rgba(48,209,88,.1);border:1px solid rgba(48,209,88,.25)}
+  .t-build{color:var(--amber);background:rgba(255,176,32,.1);border:1px solid rgba(255,176,32,.25)}
+  .t-crit{color:var(--red);background:rgba(255,43,62,.1);border:1px solid var(--line-red)}
+  .card h3{font-size:1.05rem}
+  .card p{color:var(--muted);font-size:.92rem;margin-top:8px}
+
+  /* phases */
+  .phase{display:grid;grid-template-columns:120px 1fr;gap:20px;padding:18px 0;border-bottom:1px solid var(--line)}
+  .phase:last-child{border-bottom:0}
+  @media(max-width:560px){.phase{grid-template-columns:1fr;gap:8px}}
+  .phase .pk{font-family:var(--f-mono)}
+  .phase .pk b{display:block;color:var(--red);font-size:.95rem}
+  .phase .pk span{font-size:.72rem;color:var(--faint);letter-spacing:.08em}
+  .phase h3{font-size:1.1rem;margin-bottom:8px}
+  .phase ul{margin:0;padding-left:18px;color:var(--muted);font-size:.93rem}
+  .phase li{margin:4px 0}
+  .phase li b{color:var(--fg);font-weight:600}
+
+  /* pricing */
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:620px){.tiers{grid-template-columns:1fr}}
+  .tier{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px}
+  .tier.feat{border-color:var(--line-red);box-shadow:0 0 0 1px var(--red-glow)}
+  .tier h3{font-size:1.05rem}
+  .tier .price{font-family:var(--f-display);font-size:1.8rem;margin:10px 0 2px}
+  .tier .price span{font-size:.9rem;color:var(--muted);font-family:var(--f-body)}
+  .tier .note{font-size:.84rem;color:var(--faint);margin-bottom:12px}
+  .tier ul{margin:0;padding-left:16px;color:var(--muted);font-size:.88rem}
+  .tier li{margin:5px 0}
+
+  .legal{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+  .chip{font-family:var(--f-mono);font-size:.8rem;padding:8px 13px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--muted)}
+  .chip b{color:var(--red);font-weight:400}
+
+  .foot{padding-block:34px;color:var(--faint);font-family:var(--f-mono);font-size:.8rem;border-top:1px solid var(--line)}
+  :focus-visible{outline:2px solid var(--red);outline-offset:3px}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header class="wrap">
+  <div class="brand">
+    <svg viewBox="0 0 160 160" fill="var(--red)" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M80 12 L144 34 L144 84 C144 114 116 136 80 150 C44 136 16 114 16 84 L16 34 Z M80 36 L74 46 L80 52 L86 46 Z M76 56 L44 44 L58 60 L38 56 L62 74 L76 72 Z M84 56 L116 44 L102 60 L122 56 L98 74 L84 72 Z M73 70 L87 70 L84 108 L80 124 L76 108 Z"/></svg>
+    Null<b>Hawk</b>
+  </div>
+  <span class="eyebrow">Commercialization plan</span>
+  <h1>Turning NullHawk into a product people pay for</h1>
+  <p class="sub">A hosted (SaaS) autonomous pentest tool, self-serve, aimed at individual security researchers and bug-bounty hunters. Here's the honest path from fork to paid product.</p>
+  <p class="meta">MODEL: SaaS (you host) · BUYER: individual researchers · BASE: PentAGI fork (MIT) · v0.1 — a living plan</p>
+</header>
+
+<section class="wrap">
+  <div class="callout">
+    <div class="bz"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l9 5v5c0 5.5-3.8 8.8-9 10-5.2-1.2-9-4.5-9-10V7l9-5z"/><path d="M12 8v4M12 16h.01"/></svg></div>
+    <div>
+      <h2>Read this first: the hosted-offensive problem</h2>
+      <p>When <strong>you host</strong> an autonomous attack tool, every scan and exploit runs from <strong>your</strong> infrastructure. AWS, GCP and Azure all forbid outbound attack traffic to targets you can't prove consent for — they will suspend your account, and you become the legal operator of the attack.</p>
+      <p>Every serious hosted scanner (Pentest-Tools, Detectify, Intruder) solves this the same way: <strong>target-ownership verification is feature #1</strong> — before any flow runs, the user proves the target is theirs (DNS TXT record, file on the host, or verified IP range). Build this before billing, not after.</p>
+      <p>Two design choices that fit individual researchers and cut your risk: <strong>BYO LLM key</strong> (users bring their own Anthropic/OpenAI key — your cost and liability drop) and <strong>verified-targets-only</strong> flows.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>What you have vs. what you build</h2>
+  <p class="lead">The PentAGI base already carries a surprising amount of the SaaS plumbing. Green is done, amber is new work, red is the non-negotiable.</p>
+  <div class="cards">
+    <div class="card"><span class="tag t-have">Already there</span><h3>Multi-tenancy</h3><p><code>TENANT_ID</code> isolates data, ports and sandboxes per instance — one tenant per customer is the natural unit.</p></div>
+    <div class="card"><span class="tag t-have">Already there</span><h3>Auth &amp; accounts</h3><p>Session cookies, OAuth (Google/GitHub), bearer API tokens and a password policy ship in the box.</p></div>
+    <div class="card"><span class="tag t-have">Already there</span><h3>Per-flow sandboxing</h3><p>Each flow runs tools in an isolated Docker container — the compute primitive a SaaS needs.</p></div>
+    <div class="card"><span class="tag t-build">Build</span><h3>Billing &amp; provisioning</h3><p>Stripe self-serve checkout → webhook → provision a tenant. Metered caps on concurrent flows.</p></div>
+    <div class="card"><span class="tag t-crit">Critical</span><h3>Target verification</h3><p>DNS-TXT / file / IP-range proof of ownership, gated before a flow can target anything. Full audit log.</p></div>
+    <div class="card"><span class="tag t-crit">Critical</span><h3>Abuse controls + egress</h3><p>Rate limits, denylist (gov/mil/critical infra), kill switch, dedicated egress IPs on a provider that permits security testing.</p></div>
+    <div class="card"><span class="tag t-build">Build</span><h3>Remove the phone-home</h3><p>Strip the VXControl cloud calls (<code>update.pentagi.com</code>, <code>LICENSE_KEY</code>) — don't depend on a competitor's infra.</p></div>
+    <div class="card"><span class="tag t-build">Build</span><h3>BYO LLM key</h3><p>Let users paste their own provider key. Lower your bill, lower your liability, faster onboarding.</p></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>Pricing — individual researchers</h2>
+  <p class="lead">This buyer is price-sensitive and self-service. Keep a free trial, make BYO-key the default so your margins survive, and cap concurrency per tier. Numbers are starting points to test, not gospel.</p>
+  <div class="tiers">
+    <div class="tier"><h3>Trial</h3><div class="price">€0</div><div class="note">14 days · 1 verified target</div><ul><li>1 concurrent flow</li><li>BYO LLM key required</li><li>Community support</li></ul></div>
+    <div class="tier feat"><h3>Solo</h3><div class="price">€39<span>/mo</span></div><div class="note">The researcher plan</div><ul><li>Up to 2 concurrent flows</li><li>Unlimited verified targets</li><li>Report export (PDF/MD)</li><li>BYO key or metered credits</li></ul></div>
+    <div class="tier"><h3>Pro</h3><div class="price">€99<span>/mo</span></div><div class="note">Heavy / semi-pro</div><ul><li>Up to 5 concurrent flows</li><li>Priority sandboxes</li><li>Knowledge graph + memory</li><li>Email support</li></ul></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>The phased plan</h2>
+  <div class="phase">
+    <div class="pk"><b>Phase 0</b><span>NOW · done/next</span></div>
+    <div><h3>Foundation</h3><ul><li><b>Done:</b> fork, full NullHawk rebrand, brand assets, landing page.</li><li><b>Next:</b> remove the VXControl phone-home; pick a hosting provider that allows pentest egress (not vanilla AWS).</li><li>Trademark-check "NullHawk" (EUIPO/Benelux).</li></ul></div>
+  </div>
+  <div class="phase">
+    <div class="pk"><b>Phase 1</b><span>MVP · private beta</span></div>
+    <div><h3>Sellable core</h3><ul><li><b>Target verification</b> (DNS-TXT first — simplest) gating every flow.</li><li><b>Stripe</b> self-serve signup → tenant provisioning → Solo/Pro plans.</li><li><b>BYO LLM key</b> in onboarding; abuse caps + kill switch.</li><li>Your own EULA / ToS / acceptable-use (lawyer review).</li></ul></div>
+  </div>
+  <div class="phase">
+    <div class="pk"><b>Phase 2</b><span>polish · public launch</span></div>
+    <div><h3>What researchers love</h3><ul><li><b>Report export</b> — clean findings PDF/Markdown is a top reason this buyer pays.</li><li>Usage dashboard, billing portal, email support.</li><li>Launch: Product Hunt, bug-bounty communities, security Twitter/Discord.</li></ul></div>
+  </div>
+  <div class="phase">
+    <div class="pk"><b>Phase 3</b><span>scale</span></div>
+    <div><h3>Harden &amp; grow</h3><ul><li>Dedicated egress pools, abuse-ops, SOC2-lite if you move upmarket.</li><li>Team seats / referrals; consider a Pentest-firm tier later.</li></ul></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>Legal checklist <span style="font-family:var(--f-body);font-weight:400;font-size:.95rem;color:var(--faint)">— get a lawyer; this is a map, not advice</span></h2>
+  <div class="legal">
+    <span class="chip"><b>▸</b> Own EULA + ToS</span>
+    <span class="chip"><b>▸</b> Acceptable-use: authorized testing only</span>
+    <span class="chip"><b>▸</b> Verified-target requirement in contract</span>
+    <span class="chip"><b>▸</b> Liability cap + indemnity</span>
+    <span class="chip"><b>▸</b> GDPR / DPA (EU users)</span>
+    <span class="chip"><b>▸</b> Export-control review (offensive tooling)</span>
+    <span class="chip"><b>▸</b> Keep upstream MIT notice (PentAGI)</span>
+    <span class="chip"><b>▸</b> Abuse-report + takedown process</span>
+  </div>
+</section>
+
+<div class="wrap foot">
+  NullHawk · go-to-market v0.1 — a living plan, revise as you learn. // built on the PentAGI fork (MIT), original attribution retained.
+</div>
