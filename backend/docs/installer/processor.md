@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `processor` package serves as the core orchestrator for PentAGI installer operations, managing system interactions, Docker environments, and file system operations across different product stacks. It acts as the operational engine that executes user configuration changes determined through the TUI wizard interface.
+The `processor` package serves as the core orchestrator for NullHawk installer operations, managing system interactions, Docker environments, and file system operations across different product stacks. It acts as the operational engine that executes user configuration changes determined through the TUI wizard interface.
 
 ## Installer Integration Architecture
 
@@ -20,7 +20,7 @@ graph TB
     subgraph "External Systems"
         Docker[Docker Engine<br/>Container Management]
         FS[File System<br/>Host OS]
-        UpdateServer[PentAGI Cloud API<br/>update.pentagi.com]
+        UpdateServer[NullHawk Cloud API<br/>update.pentagi.com]
         Compose[Docker Compose<br/>Stack Orchestration]
     end
 
@@ -235,7 +235,7 @@ Each specialized file should contain business-logic level methods that directly 
   - File integrity validation with YAML syntax checking
   - Embedded directory tree handling for observability stack
 - **update.go**:
-  - `checkUpdates()` - refresh what the PentAGI Cloud API says about this installation; the answer lands on the shared `checker.CheckResult` instead of being returned, so there is only one copy of it
+  - `checkUpdates()` - refresh what the NullHawk Cloud API says about this installation; the answer lands on the shared `checker.CheckResult` instead of being returned, so there is only one copy of it
   - `installerPackage()` - describe the offered build (version, platform, size, target path) without downloading it
   - `downloadInstaller()` / `updateInstaller()` - the same operation under two names: fetch `installer_<version>` and verify it; the running binary is left alone
   - `updateJaegerPlugin()` - bring the Jaeger storage plugin files up to the offered version (in `jaeger_plugin.go`)
@@ -260,7 +260,7 @@ Each specialized file should contain business-logic level methods that directly 
 - **Environment Variable Handling**: Compose files use --env-file parameter for environment variables, only special cases require file patching. Image references are part of this: every `image:` is `${<COMPONENT>_IMAGE:-<default>}`, and every operation that fetches writes those variables from the cloud answer into `.env` before pulling — bypassing the staging area, since compose reads the file
 - **Progress Tracking**: Worker downloads (vxcontrol/kali-linux 6GB+ → 13GB disk) with real-time progress via terminal; file downloads (installer build, Jaeger plugin) report every 10% against the size the package description gave
 - **Docker Configuration**: Support NET_ADMIN capability for network scanning, Docker socket access for container management
-- **Dependency Ordering**: PentAGI must start before Langfuse/Observability for network creation
+- **Dependency Ordering**: NullHawk must start before Langfuse/Observability for network creation
 - **State Persistence**: All operations update checker.CheckResult and state.State for consistency
 - **Atomicity**: Only file downloads are atomic (staged sibling + rename for the Jaeger plugin, delete-on-failure for the installer build). Compose operations are not reversible — a failed update leaves whatever compose managed to do
 
@@ -296,7 +296,7 @@ Each specialized file should contain business-logic level methods that directly 
 ### External Systems
 - Docker Compose CLI for stack orchestration
 - Docker API for container/image management
-- HTTP client (`cloud` package) for update checks and file downloads from the PentAGI Cloud API
+- HTTP client (`cloud` package) for update checks and file downloads from the NullHawk Cloud API
 - File system for content extraction and cleanup
 
 ## ApplyChanges State Machine
@@ -460,7 +460,7 @@ func WithTerminalModel(terminal ProcessorTerminalModel) CommandOption {
 ```
 
 ### Update Server Protocol
-- Every call goes through the `cloud` package to the PentAGI Cloud API at `UPDATE_SERVER_HOST` (default `update.pentagi.com`), always honoring `PROXY_URL` — the installer's own proxy setting, which the process environment may not carry. `SUPPORT_SERVER_HOST` (default `support.pentagi.com`) is written by the same settings form and belongs to the Support API; no call here targets it yet
+- Every call goes through the `cloud` package to the NullHawk Cloud API at `UPDATE_SERVER_HOST` (default `update.pentagi.com`), always honoring `PROXY_URL` — the installer's own proxy setting, which the process environment may not carry. `SUPPORT_SERVER_HOST` (default `support.pentagi.com`) is written by the same settings form and belongs to the Support API; no call here targets it yet
 - `/api/v1/proxy/updates/check` reports the installed components and answers per stack: whether an update exists, the version transition, and per component the action, the pull reference and the target digest
 - `/api/v1/proxy/packages/info` then `/api/v1/proxy/packages/download` fetch a file (installer build, Jaeger storage plugin). The description carries the size, sha256 and signature the stream is checked against; that size is also the only length the client ever learns, since the encrypted body carries no `Content-Length`, so download progress is computed from it
 - No atomic self-replacement and no post-update exit: the downloaded installer is left on disk with the command to move it into place

@@ -1,6 +1,6 @@
 # Google AI (Gemini) Provider
 
-The Google AI provider enables PentAGI to use Google's Gemini language models through the Generative AI API. This provider supports advanced features like function calling, streaming responses, and competitive pricing.
+The Google AI provider enables NullHawk to use Google's Gemini language models through the Generative AI API. This provider supports advanced features like function calling, streaming responses, and competitive pricing.
 
 ## Features
 
@@ -115,7 +115,7 @@ docker run --rm \
   -config /opt/pentagi/gemini-custom.yml
 ```
 
-## Integration with PentAGI
+## Integration with NullHawk
 
 ### Environment File (.env)
 
@@ -150,7 +150,7 @@ The Google AI provider is automatically available when `GEMINI_API_KEY` is set. 
 - Configure `top_p` to balance creativity and consistency
 
 ### Cost Management
-- Monitor token usage through PentAGI's cost tracking
+- Monitor token usage through NullHawk's cost tracking
 - Use cheaper models for simple tasks
 - Implement request batching where possible
 
@@ -226,7 +226,7 @@ docker run --rm \
 
 - [Google AI Documentation](https://ai.google.dev/docs)
 - [Gemini API Reference](https://ai.google.dev/api)
-- [PentAGI Documentation](https://docs.pentagi.com)
+- [NullHawk Documentation](https://docs.pentagi.com)
 - [Issue Tracker](https://github.com/vxcontrol/pentagi/issues)
 
 For provider-specific issues, include:

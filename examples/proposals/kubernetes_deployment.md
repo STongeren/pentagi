@@ -3,7 +3,7 @@
 ## Summary
 
 Issue [#324](https://github.com/vxcontrol/pentagi/issues/324) asks
-whether PentAGI can run on Kubernetes. Today PentAGI is built and
+whether NullHawk can run on Kubernetes. Today NullHawk is built and
 documented around Docker Compose and the installer, and there is no
 supported Kubernetes path. This RFC sketches what a future,
 incremental Kubernetes-compatibility effort could look like and names
@@ -13,11 +13,11 @@ This document does not implement runtime behavior. It does not add
 Helm charts, Kubernetes manifests, Kustomize bases, an operator, or
 CRDs. It does not change `docker-compose.yml`, the installer, the
 backend, the database schema, or any environment variable. It does
-not claim that PentAGI runs on Kubernetes today, because it does not.
+not claim that NullHawk runs on Kubernetes today, because it does not.
 It is a design surface for maintainers to push back on before any
 deployment code lands.
 
-The RFC is intentionally staged and docs-first. PentAGI's flow
+The RFC is intentionally staged and docs-first. NullHawk's flow
 executor currently talks to a Docker daemon over a bind-mounted
 socket, and that single fact drives most of the difficulty below. A
 naive "wrap the containers in a Deployment" approach would either
@@ -30,7 +30,7 @@ operator can see with `kubectl`, not a hidden background mechanism.
 
 ## Goals
 
-- Capture, in one place, the concrete reasons PentAGI does not run on
+- Capture, in one place, the concrete reasons NullHawk does not run on
   Kubernetes today, grounded in the current Compose and installer
   design rather than in guesswork.
 - Map each Compose-era assumption (secrets, volumes, service
@@ -77,7 +77,7 @@ operator can see with `kubectl`, not a hidden background mechanism.
 
 ## Current Deployment Assumptions
 
-This section describes how PentAGI is deployed today, because the
+This section describes how NullHawk is deployed today, because the
 Kubernetes considerations only make sense against the current shape.
 Everything here is drawn from `docker-compose.yml`, the installer
 docs, and the backend, not from a hypothetical setup.
@@ -94,7 +94,7 @@ docs, and the backend, not from a hypothetical setup.
   `/var/run/docker.sock`) and the backend's Docker client connects
   via `client.FromEnv`, honoring
   `DOCKER_HOST` (default `unix:///var/run/docker.sock`). During a
-  flow, PentAGI creates and destroys terminal/worker containers
+  flow, NullHawk creates and destroys terminal/worker containers
   against that daemon. The executor is effectively "talk to a Docker
   daemon and spawn sibling containers," not "run one long-lived
   process."
@@ -206,7 +206,7 @@ committed design; it is a map of the problem space.
 - **Observability.** The optional OpenTelemetry / Grafana /
   VictoriaMetrics stack maps to in-cluster deployments or, more
   likely, to whatever the operator's cluster already runs. The
-  candidate direction is to make PentAGI emit to existing cluster
+  candidate direction is to make NullHawk emit to existing cluster
   observability rather than bundling its own, with the bundled stack
   as an opt-in for clusters that have none.
 - **Image overrides.** The existing `PENTAGI_IMAGE` and related
@@ -252,12 +252,12 @@ this is the proposed sequence, not a commitment.
    lands on top of a working deployment rather than ahead of it.
 
 Each step is self-contained: maintainers can stop after any step
-without leaving PentAGI in a half-migrated state, and Compose remains
+without leaving NullHawk in a half-migrated state, and Compose remains
 the supported path throughout.
 
 ## Open Questions
 
-- Which executor model should PentAGI target first -- Kubernetes-native
+- Which executor model should NullHawk target first -- Kubernetes-native
   Pods/Jobs, a DinD sidecar, or a sandboxed runtime -- and is it worth
   supporting more than one?
 - Should Postgres (and pgvector) run in-cluster as a StatefulSet, or
@@ -269,7 +269,7 @@ the supported path throughout.
   enforced single-writer?
 - What RBAC is acceptable for the backend's ServiceAccount if it
   creates worker Pods/Jobs, and how is that least-privileged?
-- Should the observability stack be bundled, or should PentAGI default
+- Should the observability stack be bundled, or should NullHawk default
   to emitting into the operator's existing cluster observability?
 - Is Helm, an operator, or plain manifests the right packaging once a
   working deployment exists, and which should ship first?
@@ -281,7 +281,7 @@ the supported path throughout.
 
 ## Security and Operational Considerations
 
-Moving PentAGI onto Kubernetes changes its security posture, and the
+Moving NullHawk onto Kubernetes changes its security posture, and the
 changes should be designed in rather than discovered later.
 
 - **Privilege of the executor.** The current model effectively grants

@@ -1,6 +1,6 @@
-# PentAGI Installer Architecture & Design Patterns
+# NullHawk Installer Architecture & Design Patterns
 
-> Architecture patterns, design decisions, and implementation strategies specific to the PentAGI installer.
+> Architecture patterns, design decisions, and implementation strategies specific to the NullHawk installer.
 
 ## 🏗️ **Unified App Architecture**
 
@@ -46,7 +46,7 @@ func (a *App) View() string {
 - **Controller Layer**: Business logic, environment variables, configuration
 - **Styles Layer**: Presentation, theming, responsive calculations
 - **Window Layer**: Terminal size management, dimension coordination
-- **Cloud Layer**: The only route out to the PentAGI Cloud API — request construction, envelope handling, error classification
+- **Cloud Layer**: The only route out to the NullHawk Cloud API — request construction, envelope handling, error classification
 
 ## 🏗️ **Navigation Architecture**
 
@@ -533,7 +533,7 @@ func (c *StateController) loadProviderConfig(providerID string) ProviderConfig {
 ## 🏗️ **Cloud Client Architecture**
 
 ### **Single Egress Pattern**
-Everything the installer asks of the PentAGI Cloud API goes through one package: `cmd/installer/cloud`.
+Everything the installer asks of the NullHawk Cloud API goes through one package: `cmd/installer/cloud`.
 
 Both `checker` and `processor` build a `cloud.Config` from the installer state and call methods on the client. Neither constructs requests, parses responses, or opens connections to `update.pentagi.com` directly.
 

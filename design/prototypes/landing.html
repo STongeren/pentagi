@@ -1,0 +1,506 @@
+<title>NullHawk</title>
+<style>
+  /* Layout concept: a dark tactical ops console — committed single dark theme (black & red red-team identity) */
+  :root{
+    --bg:#09090b;
+    --surface:#111114;
+    --surface-2:#17171b;
+    --line:#26262c;
+    --line-red:rgba(255,43,62,.28);
+    --fg:#eceae7;
+    --muted:#908d8a;
+    --faint:#5d5b5a;
+    --red:#ff2b3e;
+    --red-deep:#b00617;
+    --red-glow:rgba(255,43,62,.45);
+    --amber:#ffb020;
+    --green:#30d158;
+    color-scheme:dark;
+
+    --f-display:"Chakra Petch",system-ui,sans-serif;
+    --f-body:"IBM Plex Sans",system-ui,sans-serif;
+    --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",monospace;
+
+    --maxw:1120px;
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--fg);font-family:var(--f-body);line-height:1.6;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-image:
+      radial-gradient(1200px 600px at 78% -5%, rgba(255,43,62,.10), transparent 60%),
+      radial-gradient(800px 500px at 0% 0%, rgba(255,43,62,.05), transparent 55%);
+  }
+  .wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:20px}
+  section{padding-block:clamp(56px,9vw,104px)}
+  h1,h2,h3{font-family:var(--f-display);font-weight:700;text-wrap:balance;letter-spacing:-.01em;margin:0}
+  p{margin:0}
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:var(--f-mono)}
+  .eyebrow{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--red);
+    display:inline-flex;align-items:center;gap:.6em}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--red)}
+
+  /* ---------- top bar ---------- */
+  header.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;
+    background:rgba(9,9,11,.78);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav-in{display:flex;align-items:center;gap:24px;height:62px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:700;font-size:1.15rem;letter-spacing:.02em}
+  .brand .mk{width:26px;height:26px;flex:none;filter:drop-shadow(0 0 6px var(--red-glow))}
+  .brand b{color:var(--red)}
+  .nav-links{display:flex;gap:26px;margin-left:auto;font-size:.9rem;color:var(--muted)}
+  .nav-links a:hover{color:var(--fg)}
+  .nav-cta{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:.82rem;
+    padding:9px 16px;border:1px solid var(--line-red);color:var(--fg);border-radius:4px;background:var(--surface)}
+  .nav-cta:hover{border-color:var(--red);box-shadow:0 0 0 1px var(--red-glow)}
+  @media(max-width:760px){.nav-links{display:none}}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;padding-top:clamp(48px,8vw,88px)}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  @media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:36px}}
+  .hero h1{font-size:clamp(2.6rem,6.4vw,4.6rem);line-height:1.02;margin-top:20px}
+  .hero h1 .slash{color:var(--red)}
+  .hero .lede{color:var(--muted);font-size:clamp(1.02rem,1.6vw,1.2rem);max-width:46ch;margin-top:22px}
+  .cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--f-mono);font-size:.9rem;
+    padding:13px 22px;border-radius:5px;border:1px solid transparent;transition:.15s;min-width:0}
+  .btn-primary{background:var(--red);color:#fff;box-shadow:0 0 24px -6px var(--red-glow)}
+  .btn-primary:hover{background:#ff3d4e;box-shadow:0 0 34px -4px var(--red-glow);transform:translateY(-1px)}
+  .btn-ghost{border-color:var(--line);color:var(--fg);background:var(--surface)}
+  .btn-ghost:hover{border-color:var(--muted)}
+  .auth-note{margin-top:22px;font-family:var(--f-mono);font-size:.76rem;color:var(--faint);
+    display:flex;align-items:center;gap:9px}
+  .auth-note svg{flex:none}
+
+  /* terminal */
+  .term{background:#0c0c0e;border:1px solid var(--line);border-radius:9px;overflow:hidden;
+    box-shadow:0 30px 70px -30px #000, 0 0 0 1px rgba(255,43,62,.05), inset 0 1px 0 rgba(255,255,255,.03);
+    position:relative}
+  .term::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(transparent 0 2px, rgba(255,255,255,.012) 2px 3px)}
+  .term-bar{display:flex;align-items:center;gap:8px;padding:11px 14px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+  .dot{width:11px;height:11px;border-radius:50%}
+  .term-title{margin-left:10px;font-family:var(--f-mono);font-size:.74rem;color:var(--faint)}
+  .term-body{padding:18px 18px 22px;font-family:var(--f-mono);font-size:.82rem;line-height:1.85;min-height:300px}
+  .ln{white-space:pre-wrap;word-break:break-word}
+  .c-p{color:var(--red)}      /* prompt */
+  .c-cmd{color:var(--fg)}
+  .c-dim{color:var(--faint)}
+  .c-ok{color:var(--green)}
+  .c-warn{color:var(--amber)}
+  .c-agent{color:#7fb8ff}
+  .cursor{display:inline-block;width:8px;height:1.05em;background:var(--red);vertical-align:-2px;
+    animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  /* ---------- stats ---------- */
+  .stats{border-block:1px solid var(--line);background:linear-gradient(180deg,var(--surface),transparent)}
+  .stats-in{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
+  @media(max-width:680px){.stats-in{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:var(--bg);padding:26px 20px;text-align:center}
+  .stat b{display:block;font-family:var(--f-display);font-size:clamp(1.8rem,4vw,2.6rem);color:var(--fg)}
+  .stat b i{color:var(--red);font-style:normal}
+  .stat span{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+  /* ---------- section head ---------- */
+  .shead{max-width:60ch}
+  .shead h2{font-size:clamp(1.8rem,3.6vw,2.7rem);margin-top:14px}
+  .shead p{color:var(--muted);margin-top:14px;font-size:1.02rem}
+
+  /* ---------- steps ---------- */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:46px}
+  @media(max-width:860px){.steps{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.steps{grid-template-columns:1fr}}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:22px;position:relative;overflow:hidden}
+  .step::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--red),transparent)}
+  .step .no{font-family:var(--f-mono);font-size:.76rem;color:var(--red);letter-spacing:.1em}
+  .step h3{font-size:1.15rem;margin-top:14px}
+  .step p{color:var(--muted);font-size:.92rem;margin-top:9px}
+
+  /* ---------- features ---------- */
+  .feat{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:46px}
+  @media(max-width:860px){.feat{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.feat{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:24px;transition:.18s}
+  .card:hover{border-color:var(--line-red);transform:translateY(-2px)}
+  .card .ico{width:38px;height:38px;border-radius:8px;display:grid;place-items:center;
+    background:rgba(255,43,62,.1);border:1px solid var(--line-red);color:var(--red);margin-bottom:16px}
+  .card h3{font-size:1.1rem}
+  .card p{color:var(--muted);font-size:.92rem;margin-top:9px}
+
+  /* ---------- arsenal ---------- */
+  .arsenal{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:clamp(26px,4vw,40px);margin-top:40px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .chip{font-family:var(--f-mono);font-size:.8rem;padding:8px 13px;border:1px solid var(--line);border-radius:5px;
+    background:var(--bg);color:var(--muted)}
+  .chip b{color:var(--red);font-weight:400}
+  .chip:hover{color:var(--fg);border-color:var(--line-red)}
+
+  /* ---------- providers ---------- */
+  .prov{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:38px}
+  .pv{font-family:var(--f-mono);font-size:.84rem;padding:16px;border:1px dashed var(--line);border-radius:7px;
+    display:flex;align-items:center;gap:10px;color:var(--muted);background:var(--surface)}
+  .pv .k{width:7px;height:7px;border-radius:50%;background:var(--red);flex:none;box-shadow:0 0 8px var(--red-glow)}
+
+  /* ---------- ethics ---------- */
+  .ethics{background:linear-gradient(180deg,rgba(255,43,62,.06),transparent);border:1px solid var(--line-red);
+    border-radius:12px;padding:clamp(26px,4vw,40px);display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:start}
+  @media(max-width:620px){.ethics{grid-template-columns:1fr}}
+  .ethics .badge{width:58px;height:58px;border-radius:12px;display:grid;place-items:center;
+    background:rgba(255,43,62,.12);border:1px solid var(--line-red);color:var(--red)}
+  .ethics h3{font-size:1.4rem}
+  .ethics p{color:var(--muted);margin-top:12px;max-width:62ch}
+
+  /* ---------- final cta ---------- */
+  .final{text-align:center}
+  .final h2{font-size:clamp(2rem,5vw,3.4rem)}
+  .final p{color:var(--muted);margin:18px auto 0;max-width:52ch}
+  .cmd-line{display:inline-flex;align-items:center;gap:12px;margin-top:30px;font-family:var(--f-mono);font-size:.9rem;
+    background:#0c0c0e;border:1px solid var(--line);border-radius:7px;padding:14px 18px;max-width:100%;overflow-x:auto}
+  .cmd-line .c-p{color:var(--red)}
+  .copy{margin-left:4px;font-size:.72rem;color:var(--faint);border:1px solid var(--line);background:var(--surface);
+    border-radius:4px;padding:5px 9px;cursor:pointer;font-family:var(--f-mono);flex:none}
+  .copy:hover{color:var(--fg);border-color:var(--muted)}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding-block:40px;color:var(--faint)}
+  .foot-in{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;font-size:.84rem}
+  .foot-in .mono{color:var(--faint)}
+  footer a:hover{color:var(--fg)}
+
+  :focus-visible{outline:2px solid var(--red);outline-offset:3px;border-radius:3px}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<!-- ===== NAV ===== -->
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top" aria-label="NullHawk home">
+      <svg class="mk" viewBox="0 0 160 160" fill="var(--red)" aria-hidden="true">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M80 12 L144 34 L144 84 C144 114 116 136 80 150 C44 136 16 114 16 84 L16 34 Z M80 36 L74 46 L80 52 L86 46 Z M76 56 L44 44 L58 60 L38 56 L62 74 L76 72 Z M84 56 L116 44 L102 60 L122 56 L98 74 L84 72 Z M73 70 L87 70 L84 108 L80 124 L76 108 Z"/>
+      </svg>
+      Null<b>Hawk</b>
+    </a>
+    <nav class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#features">Capabilities</a>
+      <a href="#arsenal">Arsenal</a>
+      <a href="#models">Models</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
+    <a class="nav-cta" href="#deploy">./deploy</a>
+  </div>
+</header>
+
+<a id="top"></a>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Autonomous red-team AI</span>
+      <h1>Your AI pentest team.<br><span class="slash">//</span> On your infra.</h1>
+      <p class="lede">NullHawk is a self-hosted swarm of AI agents that plan, execute and report a penetration test. Point it at a target, give it a goal in plain language, and it runs real tooling inside an isolated sandbox — then hands you the findings.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#deploy">Deploy NullHawk →</a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
+      </div>
+      <p class="auth-note">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--faint)" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>
+        Built for authorized engagements only. You own the scope.
+      </p>
+    </div>
+
+    <div class="term" aria-hidden="true">
+      <div class="term-bar">
+        <span class="dot" style="background:#ff5f57"></span>
+        <span class="dot" style="background:#febc2e"></span>
+        <span class="dot" style="background:#28c840"></span>
+        <span class="term-title mono">nullhawk — flow #0427</span>
+      </div>
+      <div class="term-body" id="term"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="stats" style="padding-block:0">
+  <div class="wrap" style="padding-inline:0">
+    <div class="stats-in">
+      <div class="stat"><b>20<i>+</i></b><span>Pentest tools</span></div>
+      <div class="stat"><b>10<i>+</i></b><span>LLM providers</span></div>
+      <div class="stat"><b>100<i>%</i></b><span>Self-hosted</span></div>
+      <div class="stat"><b><i>&infin;</i></b><span>Sandboxed runs</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW ===== -->
+<section id="how">
+  <div class="wrap">
+    <div class="shead">
+      <span class="eyebrow">Operating loop</span>
+      <h2>From one sentence to a full report</h2>
+      <p>No scripts to wire up. A supervisor agent breaks the objective down and delegates to specialists — each one watched, each step logged.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="no">01 / TASK</div><h3>Describe the target</h3><p>Hand over a scope and a goal in plain language. "Map the web app on 10.0.0.5 and find auth flaws."</p></div>
+      <div class="step"><div class="no">02 / PLAN</div><h3>Agents plan</h3><p>A supervisor decomposes the work and routes subtasks to research, exploitation and infra agents.</p></div>
+      <div class="step"><div class="no">03 / EXECUTE</div><h3>Run in the sandbox</h3><p>Real tools fire inside an isolated Docker environment — never on your host — with live execution monitoring.</p></div>
+      <div class="step"><div class="no">04 / REPORT</div><h3>Learn &amp; report</h3><p>Findings land in long-term memory and a structured report. Every successful path feeds the next engagement.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section id="features">
+  <div class="wrap">
+    <div class="shead">
+      <span class="eyebrow">Capabilities</span>
+      <h2>Built like infrastructure, not a toy</h2>
+      <p>Everything runs on hardware you control, with APIs to automate it and memory that compounds.</p>
+    </div>
+    <div class="feat">
+      <div class="card"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 20h10M12 18v2"/></svg></div><h3>Isolated sandbox</h3><p>Every tool executes in a disposable Docker container, fully isolated from the host and the network you choose to expose.</p></div>
+      <div class="card"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/></svg></div><h3>Multi-agent swarm</h3><p>Specialized research, development and infra agents work in parallel under a supervisor that keeps smaller models on track.</p></div>
+      <div class="card"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M3 12h18" opacity=".3"/><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3>Compounding memory</h3><p>Results and winning approaches persist in Postgres + pgvector, with an optional Neo4j knowledge graph of hosts, services and findings.</p></div>
+      <div class="card"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg></div><h3>REST &amp; GraphQL API</h3><p>Drive engagements from CI, scripts or your own frontend. Bearer tokens, full programmatic control.</p></div>
+      <div class="card"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg></div><h3>Web intelligence</h3><p>A built-in headless browser and connectors to Tavily, Perplexity, SearXNG, Sploitus and more pull in live recon context.</p></div>
+      <div class="card"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/><path d="m9 12 2 2 4-4"/></svg></div><h3>Full observability</h3><p>Optional Langfuse tracing, Grafana dashboards and per-step monitoring — see exactly what each agent did and why.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ARSENAL ===== -->
+<section id="arsenal">
+  <div class="wrap">
+    <div class="shead">
+      <span class="eyebrow">The arsenal</span>
+      <h2>Professional tools, agent-driven</h2>
+      <p>NullHawk wields the same tooling a human operator reaches for — it just never gets tired of enumerating.</p>
+    </div>
+    <div class="arsenal">
+      <span class="mono" style="color:var(--faint);font-size:.78rem;letter-spacing:.1em">$ nullhawk --list-tools</span>
+      <div class="chips">
+        <span class="chip"><b>▸</b> nmap</span>
+        <span class="chip"><b>▸</b> metasploit</span>
+        <span class="chip"><b>▸</b> sqlmap</span>
+        <span class="chip"><b>▸</b> nuclei</span>
+        <span class="chip"><b>▸</b> gobuster</span>
+        <span class="chip"><b>▸</b> ffuf</span>
+        <span class="chip"><b>▸</b> hydra</span>
+        <span class="chip"><b>▸</b> nikto</span>
+        <span class="chip"><b>▸</b> wpscan</span>
+        <span class="chip"><b>▸</b> hashcat</span>
+        <span class="chip"><b>▸</b> john</span>
+        <span class="chip"><b>▸</b> dirb</span>
+        <span class="chip"><b>▸</b> masscan</span>
+        <span class="chip"><b>▸</b> amass</span>
+        <span class="chip"><b>▸</b> + 10 more</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MODELS ===== -->
+<section id="models">
+  <div class="wrap">
+    <div class="shead">
+      <span class="eyebrow">Bring your own brain</span>
+      <h2>Any model. Your keys. Your bill.</h2>
+      <p>NullHawk is model-agnostic. Run frontier models for exploitation, cheap ones for recon, or go fully local with Ollama — no data leaves your network.</p>
+    </div>
+    <div class="prov">
+      <div class="pv"><span class="k"></span>Anthropic Claude</div>
+      <div class="pv"><span class="k"></span>OpenAI GPT</div>
+      <div class="pv"><span class="k"></span>Google Gemini</div>
+      <div class="pv"><span class="k"></span>AWS Bedrock</div>
+      <div class="pv"><span class="k"></span>Ollama / local</div>
+      <div class="pv"><span class="k"></span>DeepSeek</div>
+      <div class="pv"><span class="k"></span>Mistral</div>
+      <div class="pv"><span class="k"></span>xAI Grok</div>
+      <div class="pv"><span class="k"></span>Custom gateway</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<style>
+  #pricing .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px}
+  @media(max-width:760px){#pricing .tiers{grid-template-columns:1fr}}
+  #pricing .tier{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:26px;display:flex;flex-direction:column;min-width:0}
+  #pricing .tier.feat{border-color:var(--line-red);box-shadow:0 0 0 1px var(--red-glow)}
+  #pricing .badge2{align-self:flex-start;font-family:var(--f-mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--red);background:rgba(255,43,62,.1);border:1px solid var(--line-red);border-radius:4px;padding:3px 8px;margin-bottom:14px}
+  #pricing .tier h3{font-family:var(--f-display);font-size:1.2rem}
+  #pricing .price{font-family:var(--f-display);font-size:2.4rem;font-weight:700;margin:12px 0 2px}
+  #pricing .price span{font-size:.9rem;color:var(--muted);font-family:var(--f-body);font-weight:400}
+  #pricing .pnote{font-size:.86rem;color:var(--faint);margin-bottom:18px}
+  #pricing .tier ul{list-style:none;margin:0 0 22px;padding:0;color:var(--muted);font-size:.92rem;flex:1}
+  #pricing .tier li{display:flex;gap:9px;padding:6px 0;align-items:flex-start}
+  #pricing .tier li svg{flex:none;margin-top:5px;color:var(--red)}
+  #pricing .tbtn{display:block;text-align:center;font-family:var(--f-mono);font-size:.86rem;padding:12px;border-radius:6px;border:1px solid var(--line);color:var(--fg);background:var(--bg);transition:.15s}
+  #pricing .tier.feat .tbtn{background:var(--red);color:#fff;border-color:var(--red)}
+  #pricing .tbtn:hover{border-color:var(--red)}
+  #pricing .beta{text-align:center;margin-top:26px;font-family:var(--f-mono);font-size:.8rem;color:var(--faint)}
+</style>
+<section id="pricing">
+  <div class="wrap">
+    <div class="shead">
+      <span class="eyebrow">Pricing</span>
+      <h2>Built for researchers, priced for researchers</h2>
+      <p>Bring your own LLM key to keep it cheap. Every plan runs flows only against targets you've verified you own.</p>
+    </div>
+    <div class="tiers">
+      <div class="tier">
+        <span class="badge2">Trial</span>
+        <h3>Free</h3>
+        <div class="price">€0</div>
+        <div class="pnote">14 days · 1 verified target</div>
+        <ul>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg> 1 concurrent flow</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg> Bring your own LLM key</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg> Community support</li>
+        </ul>
+        <a class="tbtn" href="#deploy">Start free</a>
+      </div>
+      <div class="tier feat">
+        <span class="badge2">Most popular</span>
+        <h3>Solo</h3>
+        <div class="price">€39<span>/mo</span></div>
+        <div class="pnote">The researcher plan</div>
+        <ul>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg> Up to 2 concurrent flows</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg> Unlimited verified targets</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg> Report export (PDF / Markdown)</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg> BYO key or metered credits</li>
+        </ul>
+        <a class="tbtn" href="#deploy">Start free trial</a>
+      </div>
+      <div class="tier">
+        <span class="badge2">Pro</span>
+        <h3>Pro</h3>
+        <div class="price">€99<span>/mo</span></div>
+        <div class="pnote">Heavy / semi-pro</div>
+        <ul>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg> Up to 5 concurrent flows</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg> Priority sandboxes</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg> Knowledge graph + memory</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg> Email support</li>
+        </ul>
+        <a class="tbtn" href="#deploy">Start free trial</a>
+      </div>
+    </div>
+    <p class="beta">// Private beta — authorized testing only. Every target is ownership-verified before a flow runs.</p>
+  </div>
+</section>
+
+<!-- ===== ETHICS ===== -->
+<section>
+  <div class="wrap">
+    <div class="ethics">
+      <div class="badge">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5.2-3.6 8.4-8 10-4.4-1.6-8-4.8-8-10V6l8-4z"/><path d="m9 12 2 2 4-4"/></svg>
+      </div>
+      <div>
+        <h3>Authorized testing only</h3>
+        <p>NullHawk is a power tool for security professionals. Only run it against systems you own or have explicit written permission to test. You are responsible for staying inside your scope and the law. The sandbox protects your infrastructure — it does not grant you authorization.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DEPLOY / CTA ===== -->
+<section id="deploy" class="final">
+  <div class="wrap">
+    <span class="eyebrow" style="justify-content:center">Deploy in minutes</span>
+    <h2>Spin up your own hawk</h2>
+    <p>Self-hosted via Docker Compose. Clone, drop in a model key, and launch the console.</p>
+    <div class="cmd-line">
+      <span><span class="c-p">$</span> <span id="cmd">git clone &amp;&amp; docker compose up -d</span></span>
+      <button class="copy" id="copyBtn" type="button">copy</button>
+    </div>
+    <div class="cta-row" style="justify-content:center;margin-top:28px">
+      <a class="btn btn-primary" href="#top">Get started</a>
+      <a class="btn btn-ghost" href="#features">Read the docs</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <span class="brand" style="font-size:1rem">Null<b>Hawk</b></span>
+    <span class="mono">// autonomous red-team AI · self-hosted</span>
+    <span class="mono">© 2026 NullHawk</span>
+  </div>
+</footer>
+
+<script>
+  // --- animated hero terminal ---
+  (function(){
+    var el = document.getElementById('term');
+    if(!el) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var lines = [
+      ['c-p','nullhawk> ',' c-cmd','target scope: 10.0.0.5  goal: "find & verify auth flaws"'],
+      ['c-dim','',''," "],
+      ['c-agent','[supervisor] ','c-dim','decomposing objective → 4 subtasks'],
+      ['c-agent','[recon]      ','c-dim','nmap -sV 10.0.0.5  ·  3 services up'],
+      ['c-ok','  └─ found   ','c-dim','80/http (nginx)  22/ssh  5432/postgres'],
+      ['c-agent','[research]   ','c-dim','enumerating web routes with ffuf …'],
+      ['c-warn','  ! lead     ','c-dim','/api/login reflects error on malformed JSON'],
+      ['c-agent','[exploit]    ','c-dim','sqlmap --url /api/login --technique=B'],
+      ['c-ok','  ✓ verified ','c-dim','boolean-blind SQLi · parameter: user'],
+      ['c-agent','[supervisor] ','c-dim','writing finding to memory + report'],
+      ['c-ok','DONE ','c-dim','1 critical · 2 info · report flow #0427 ready']
+    ];
+    function span(cls,txt){ if(!txt) return ''; return '<span class="'+cls+'">'+txt+'</span>'; }
+    if(reduce){
+      el.innerHTML = lines.map(function(l){
+        return '<div class="ln">'+span(l[0],l[1])+span('c-cmd',l[3]?l[2]&&0:'' )+span(l[2]==='c-cmd'?'c-cmd':l[2],l[3]!==undefined?'':'')+span(l[2],l[3]!==undefined?'':'')+ (l[3]!==undefined? span(l[2],'')+span(l[2]==='c-cmd'?'c-cmd':l[2],'') : '') + '</div>';
+      }).join('');
+      // simpler fallback:
+      el.innerHTML = lines.map(function(l){
+        var rest = (l[3]!==undefined)? span(l[2]==='c-cmd'?'c-cmd':l[2], l[3]) : '';
+        return '<div class="ln">'+span(l[0],l[1])+rest+'</div>';
+      }).join('');
+      return;
+    }
+    var i=0;
+    function next(){
+      if(i>=lines.length){
+        var c=document.createElement('span'); c.className='cursor'; el.appendChild(c); return;
+      }
+      var l=lines[i++];
+      var div=document.createElement('div'); div.className='ln';
+      var rest = (l[3]!==undefined)? span(l[2]==='c-cmd'?'c-cmd':l[2], l[3]) : '';
+      div.innerHTML=span(l[0],l[1])+rest;
+      div.style.opacity=0; div.style.transition='opacity .25s';
+      el.appendChild(div);
+      requestAnimationFrame(function(){div.style.opacity=1;});
+      el.scrollTop=el.scrollHeight;
+      setTimeout(next, 420 + Math.random()*260);
+    }
+    setTimeout(next, 500);
+  })();
+
+  // --- copy button ---
+  (function(){
+    var btn=document.getElementById('copyBtn');
+    var cmd=document.getElementById('cmd');
+    if(!btn||!cmd) return;
+    btn.addEventListener('click',function(){
+      var text='git clone https://github.com/STongeren/pentagi.git && cd pentagi && docker compose up -d';
+      try{
+        navigator.clipboard.writeText(text).then(function(){
+          btn.textContent='copied'; setTimeout(function(){btn.textContent='copy';},1600);
+        }).catch(select);
+      }catch(e){ select(); }
+      function select(){
+        var r=document.createRange(); r.selectNodeContents(cmd);
+        var s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        btn.textContent='select+copy';
+      }
+    });
+  })();
+</script>

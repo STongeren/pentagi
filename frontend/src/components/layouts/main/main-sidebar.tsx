@@ -109,7 +109,7 @@ export function MainSidebar() {
                     <SidebarMenuItem>
                         <VersionPanel
                             icon={<Logo className="hover:animate-logo-spin size-8" />}
-                            title="PentAGI"
+                            title="NullHawk"
                         />
                     </SidebarMenuItem>
                 </SidebarMenu>

@@ -1,10 +1,10 @@
-# Langfuse Integration for PentAGI
+# Langfuse Integration for NullHawk
 
-This document provides a comprehensive guide to the Langfuse integration in PentAGI, covering architecture, setup, usage patterns, and best practices for developers.
+This document provides a comprehensive guide to the Langfuse integration in NullHawk, covering architecture, setup, usage patterns, and best practices for developers.
 
 ## Table of Contents
 
-- [Langfuse Integration for PentAGI](#langfuse-integration-for-pentagi)
+- [Langfuse Integration for NullHawk](#langfuse-integration-for-pentagi)
   - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
   - [Architecture](#architecture)
@@ -43,7 +43,7 @@ This document provides a comprehensive guide to the Langfuse integration in Pent
 
 ## Introduction
 
-Langfuse is an open-source observability platform specifically designed for LLM-powered applications. The PentAGI integration with Langfuse provides:
+Langfuse is an open-source observability platform specifically designed for LLM-powered applications. The NullHawk integration with Langfuse provides:
 
 - **Comprehensive tracing** for AI agent flows and tasks
 - **Detailed telemetry** for LLM interactions and tool calls
@@ -61,11 +61,11 @@ This integration enables developers to:
 
 ### Component Overview
 
-The Langfuse integration in PentAGI is built around a layered architecture that provides both high-level abstractions for simple use cases and fine-grained control for complex scenarios.
+The Langfuse integration in NullHawk is built around a layered architecture that provides both high-level abstractions for simple use cases and fine-grained control for complex scenarios.
 
 ```mermaid
 flowchart TD
-    Application[PentAGI Application] --> Observer[Observer]
+    Application[NullHawk Application] --> Observer[Observer]
     Observer --> Client[Langfuse Client]
     Client --> API[Langfuse API]
 
@@ -110,7 +110,7 @@ The data flow through the Langfuse system follows a consistent pattern:
 
 ```mermaid
 sequenceDiagram
-    participant App as PentAGI Application
+    participant App as NullHawk Application
     participant Obs as Observer
     participant Queue as Event Queue
     participant Client as Langfuse Client
@@ -863,7 +863,7 @@ Converted to assistant message with content, tool_calls, and thinking fields as 
 
 ### Flow Controller Integration
 
-The main integration point in PentAGI is the Flow Controller, which handles the lifecycle of AI agent flows:
+The main integration point in NullHawk is the Flow Controller, which handles the lifecycle of AI agent flows:
 
 ```go
 // In flow controller initialization

@@ -1,9 +1,9 @@
-# RFC: BrowserOS MCP Browser Backend for PentAGI Agents
+# RFC: BrowserOS MCP Browser Backend for NullHawk Agents
 
 ## Summary
 
 Issue [#342](https://github.com/vxcontrol/pentagi/issues/342)
-proposes optional BrowserOS MCP support so PentAGI agents can use a
+proposes optional BrowserOS MCP support so NullHawk agents can use a
 stateful browser session for pages that need interaction, JavaScript
 rendering, form input, login-page handling, screenshots, and visual UI
 inspection.
@@ -68,7 +68,7 @@ dialogs:
 
 ## Current Browser Tool Behavior
 
-PentAGI's current browser tool is implemented in
+NullHawk's current browser tool is implemented in
 `backend/pkg/tools/browser.go`. It is request/response oriented and uses
 configured scraper URLs rather than a long-lived browser session.
 
@@ -97,12 +97,12 @@ real browser session across several steps.
 ## Proposed BrowserOS MCP Backend
 
 A future implementation can introduce BrowserOS as an optional backend
-behind PentAGI's browser capability. BrowserOS MCP should be configured
+behind NullHawk's browser capability. BrowserOS MCP should be configured
 as an MCP server and discovered through the same client layer proposed in
 the MCP client integration RFC.
 
 The BrowserOS backend should expose a narrow browser-focused tool
-surface to PentAGI agents. Candidate action groups:
+surface to NullHawk agents. Candidate action groups:
 
 - Navigation: open a URL, reload, go back, go forward, create or close a
   session-scoped page.
@@ -123,7 +123,7 @@ cloud sync, stored passwords, personal profiles, and cross-application
 actions should be blocked unless maintainers later design a separate
 opt-in capability with its own review.
 
-The agent-facing result should preserve PentAGI's current expectations:
+The agent-facing result should preserve NullHawk's current expectations:
 return a concise text result to the agent, attach screenshots through
 the normal screenshot path when available, and surface errors as browser
 tool errors that the agent can reason about.
@@ -162,7 +162,7 @@ state explicit and isolated.
 
 Recommended isolation model:
 
-- Each PentAGI flow gets its own BrowserOS session or profile namespace.
+- Each NullHawk flow gets its own BrowserOS session or profile namespace.
 - Task and subtask records include the session identifier in audit logs,
   but the raw BrowserOS endpoint and credentials are redacted.
 - Browser pages created for one flow are not reused by another flow.
@@ -210,12 +210,12 @@ Required safety properties:
   app integrations, or existing user sessions.
 - Bounded execution. Each MCP call has a timeout, maximum response size,
   and cancellation path tied to the agent/tool call context.
-- Operator-controlled reachability. Connecting from a PentAGI container
+- Operator-controlled reachability. Connecting from a NullHawk container
   to a host BrowserOS MCP endpoint must be an explicit deployment
   choice. The design must not assume `host.docker.internal`, host
   network mode, or access to a user's desktop browser.
 
-The backend should preserve PentAGI's lawful pentesting posture:
+The backend should preserve NullHawk's lawful pentesting posture:
 interactive browsing is useful for authorized targets, but it must not
 be framed as a way to bypass site controls, automate personal accounts,
 or broaden scope without approval.
@@ -304,10 +304,10 @@ Implementation notes for a future PR:
   configuration model where possible.
 - BrowserOS tool identifiers in this sketch are illustrative. The final
   implementation must validate canonical names and schemas through MCP
-  discovery before exposing or mapping them to PentAGI actions.
+  discovery before exposing or mapping them to NullHawk actions.
 - The tool allowlist should be narrow by default and explicitly exclude
   app integrations, history, bookmarks, and profile-management tools.
-- The target allowlist should integrate with PentAGI's flow scope model
+- The target allowlist should integrate with NullHawk's flow scope model
   if such a scope source is available at implementation time.
 - Any credentials or headers needed to reach BrowserOS MCP should use
   existing secret-handling patterns and must be redacted everywhere.
@@ -321,7 +321,7 @@ BrowserOS MCP failures should degrade safely and visibly.
 
 Expected failure modes:
 
-- BrowserOS MCP endpoint is unreachable from the PentAGI backend.
+- BrowserOS MCP endpoint is unreachable from the NullHawk backend.
 - The endpoint is configured with a host-only address that containers
   cannot reach.
 - The MCP server is reachable but tool discovery fails.
@@ -357,7 +357,7 @@ Recommended behavior:
   strict `scraper` versus `browseros_mcp` selection model?
 - Where should the browser backend configuration live so operators can
   inspect it without leaking secrets?
-- How should BrowserOS sessions map to PentAGI flows, tasks, and
+- How should BrowserOS sessions map to NullHawk flows, tasks, and
   subtasks if a flow runs multiple parallel browser tasks?
 - What is the right approval UX for credential entry, form submission,
   OAuth consent, file upload, and destructive UI actions?
@@ -370,7 +370,7 @@ Recommended behavior:
   transport supported by the generic MCP client implementation?
 - Should a future implementation support headless/hidden BrowserOS pages,
   or require visible browser state for operator trust?
-- How should cleanup behave after backend crashes, PentAGI restarts, or
+- How should cleanup behave after backend crashes, NullHawk restarts, or
   BrowserOS is closed externally?
 
 ## Incremental Milestones

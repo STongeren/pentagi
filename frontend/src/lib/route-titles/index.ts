@@ -86,6 +86,8 @@ export const routeTitles = {
 
     resources: { title: 'Resources' },
 
+    targets: { title: 'Target Verification' },
+
     template: {
         title: apolloTitle({
             document: FlowTemplateDocument,

@@ -1,7 +1,7 @@
 # RFC: Native Google Vertex AI Provider
 
 > Status: RFC / planning. This document proposes a future provider. Native
-> Vertex AI support does **not** exist in PentAGI today; every variable, type,
+> Vertex AI support does **not** exist in NullHawk today; every variable, type,
 > and migration named here is a candidate, not a shipped feature. The intent is
 > to agree on direction (especially the open questions) before any code is
 > written.
@@ -45,7 +45,7 @@ maintainer direction first.
 
 ## Current Provider Landscape
 
-PentAGI currently registers the following provider types: `openai`,
+NullHawk currently registers the following provider types: `openai`,
 `anthropic`, `gemini`, `bedrock`, `ollama`, `custom`, `deepseek`, `glm`,
 `kimi`, and `qwen`. The Google- and Anthropic-relevant options today are:
 
@@ -89,7 +89,7 @@ Proposed to defer:
 
 Vertex AI uses GCP IAM (OAuth2 access tokens minted from ADC or a service
 account), not a static API key. The AWS Bedrock provider already demonstrates a
-multi-mode auth pattern in PentAGI, and a Vertex auth model could mirror its
+multi-mode auth pattern in NullHawk, and a Vertex auth model could mirror its
 shape:
 
 - **ADC (default)**: use Application Default Credentials resolved from the

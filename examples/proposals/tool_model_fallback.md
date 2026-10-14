@@ -4,7 +4,7 @@ Issue [#341](https://github.com/vxcontrol/pentagi/issues/341) proposes a configu
 
 This document does not add Go or JavaScript code, dependencies, database migrations, GraphQL schema, generated files, Docker changes, installer behavior, or new environment variables. It is a design proposal for maintainers to review before the project commits to a fallback implementation.
 
-PentAGI already has several recovery mechanisms: retries, tool-call argument fixing, repeated-call detection, reflector recovery, execution monitoring, planner support, Installer Agent concepts, and configurable tool-call limits. The proposed fallback layer should build on those mechanisms without hiding extra automation behind the flow lifecycle.
+NullHawk already has several recovery mechanisms: retries, tool-call argument fixing, repeated-call detection, reflector recovery, execution monitoring, planner support, Installer Agent concepts, and configurable tool-call limits. The proposed fallback layer should build on those mechanisms without hiding extra automation behind the flow lifecycle.
 
 ## Goals
 
@@ -14,7 +14,7 @@ PentAGI already has several recovery mechanisms: retries, tool-call argument fix
 - Prefer already configured and already available tools before considering installation.
 - Require explicit operator approval before installing tools by default.
 - Make each fallback decision visible in flow output, logs, and future audit surfaces.
-- Preserve PentAGI's existing flow, task, subtask, agent, and tool-call model.
+- Preserve NullHawk's existing flow, task, subtask, agent, and tool-call model.
 - Provide incremental milestones that can be implemented and reviewed in small PRs.
 
 ## Non-Goals
@@ -29,7 +29,7 @@ PentAGI already has several recovery mechanisms: retries, tool-call argument fix
 
 ## Current Recovery Behavior
 
-PentAGI already has multiple recovery layers that should remain the first line of defense:
+NullHawk already has multiple recovery layers that should remain the first line of defense:
 
 - Agent and provider calls retry before returning failure.
 - Tool execution retries and can invoke the tool-call argument fixer when arguments are invalid or rejected.
@@ -268,7 +268,7 @@ Key risks:
 ## Open Questions
 
 - Where should fallback policy live: static config, database settings, admin UI, per-flow options, or a combination?
-- How should PentAGI define capability equivalence between tools without hard-coding too much policy into prompts?
+- How should NullHawk define capability equivalence between tools without hard-coding too much policy into prompts?
 - Should tool fallback be configured globally, per user, per agent type, or per flow?
 - What is the approval surface when a flow is running but `ASK_USER` is disabled?
 - Which install sources are trusted enough for a first implementation?

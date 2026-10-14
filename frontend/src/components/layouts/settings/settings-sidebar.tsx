@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { ArrowLeft, FileText, Key, Plug, Settings as SettingsIcon, User } from 'lucide-react';
+import { ArrowLeft, FileText, Key, Plug, Settings as SettingsIcon, ShieldCheck, User } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 
@@ -54,6 +54,12 @@ const menuItems: readonly MenuItem[] = [
         id: 'api-tokens',
         path: routes.settings.apiTokens,
         title: 'API Tokens',
+    },
+    {
+        icon: <ShieldCheck className="size-4" />,
+        id: 'targets',
+        path: routes.settings.targets,
+        title: 'Target Verification',
     },
 ] as const;
 

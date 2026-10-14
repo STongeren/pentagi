@@ -1,10 +1,10 @@
-# PentAGI Installer Overview
+# NullHawk Installer Overview
 
-> Comprehensive guide to the PentAGI installer - a robust Terminal User Interface (TUI) for configuring and deploying PentAGI services.
+> Comprehensive guide to the NullHawk installer - a robust Terminal User Interface (TUI) for configuring and deploying NullHawk services.
 
 ## 🎯 **Project Overview**
 
-The PentAGI installer provides a modern, interactive Terminal User Interface for configuring and deploying the PentAGI autonomous penetration testing platform. Built using the [Charm](https://charm.sh/) tech stack, it implements responsive design patterns optimized for terminal environments.
+The NullHawk installer provides a modern, interactive Terminal User Interface for configuring and deploying the NullHawk autonomous penetration testing platform. Built using the [Charm](https://charm.sh/) tech stack, it implements responsive design patterns optimized for terminal environments.
 
 ### **Core Purpose**
 - **Configuration Management**: Interactive setup of LLM providers, monitoring, and security settings
@@ -209,11 +209,11 @@ Forms automatically scroll to keep focused fields visible:
 
 Two screens under **Maintenance** stand outside the generic operation form: neither edits configuration, and neither is an operation the form framework describes for itself. They sit at different distances from the form system — the overview is a plain viewport over a rendered document, while the installer update is still a `BaseScreen`, built with an empty field list, which is what gives it the help panel and the vertical/horizontal layout.
 
-The two entries appear under different conditions. **Update Installer** shows only when a newer build is on offer *and* the update server answered. **Update PentAGI** shows whenever an installed stack is not known to be up to date — which includes a check that failed, because a failed check resets every per-stack verdict instead of leaving a stale one in place. So the overview is reachable with nothing yet known to need doing, and that is exactly why it has to be able to say the check did not complete.
+The two entries appear under different conditions. **Update Installer** shows only when a newer build is on offer *and* the update server answered. **Update NullHawk** shows whenever an installed stack is not known to be up to date — which includes a check that failed, because a failed check resets every per-stack verdict instead of leaving a stale one in place. So the overview is reachable with nothing yet known to need doing, and that is exactly why it has to be able to say the check did not complete.
 
 ### **Update Overview** (`models/update_overview.go`)
 
-Sits **between** the "Update PentAGI" menu entry and the apply form, which the entry used to point at directly — so the first thing the user saw was "are you sure?" about something the interface had never described. The overview describes it, then continues to the same form, confirmation and all.
+Sits **between** the "Update NullHawk" menu entry and the apply form, which the entry used to point at directly — so the first thing the user saw was "are you sure?" about something the interface had never described. The overview describes it, then continues to the same form, confirmation and all.
 
 - **Informational only**: the document is built from the update check already in memory, so the screen makes no network call and cannot fail
 - **Per stack**: the version move (`current → target`), a note when components come from different releases and the version shown is therefore the oldest of them, and the per-component plan
@@ -242,8 +242,8 @@ All user-visible text stored in `locale/locale.go`:
 ```go
 // Screen-specific constants
 const (
-    WelcomeTitle = "PentAGI Installer"
-    WelcomeGreeting = "Welcome to PentAGI!"
+    WelcomeTitle = "NullHawk Installer"
+    WelcomeGreeting = "Welcome to NullHawk!"
 
     // Form help text with practical guidance
     LLMFormOpenAIHelp = `OpenAI provides access to GPT models...
@@ -306,4 +306,4 @@ Detailed guidance integrated into forms:
 - **Dimension Testing**: Minimum (80x24) to large terminal support
 - **Navigation Testing**: Complete flow validation
 
-This overview provides the foundation for understanding the PentAGI installer's architecture, features, and development approach. The system prioritizes user experience, maintainability, and production reliability.
+This overview provides the foundation for understanding the NullHawk installer's architecture, features, and development approach. The system prioritizes user experience, maintainability, and production reliability.

@@ -1,4 +1,4 @@
-# RFC: Headless Crawler Integration for PentAGI
+# RFC: Headless Crawler Integration for NullHawk
 
 ## Summary
 
@@ -8,14 +8,14 @@ flow can brute-force directories with dictionary tools such as `ffuf`,
 but it cannot crawl an application to discover its real routes, links,
 forms, parameters, and JavaScript endpoints. Dictionary fuzzing guesses
 paths from a wordlist; crawling observes the paths the application
-actually exposes. The two are complementary, and PentAGI currently has
+actually exposes. The two are complementary, and NullHawk currently has
 no first-class, scoped, structured crawler capability.
 
 This RFC is a design proposal only. It does not add runtime code, a new
 tool handler, a crawler client, GraphQL schema, database migrations,
 frontend UI, installer logic, provider configuration, Docker image
 changes, Docker Compose changes, `.env.example` entries, or generated
-files. It proposes how PentAGI could expose crawler-style URL discovery
+files. It proposes how NullHawk could expose crawler-style URL discovery
 as an optional capability so maintainers can review scope, safety, and
 the artifact model before any implementation lands.
 
@@ -24,7 +24,7 @@ The proposed direction is a tool-agnostic "crawler backend" (or
 `crawlergo`, `rad`, and `jsfinder`, disabled by default, producing
 normalized discovery artifacts (URLs, forms, parameters, JavaScript
 endpoints, status codes, source page, depth, and scope decision) that
-other PentAGI tools, agents, and reports can consume.
+other NullHawk tools, agents, and reports can consume.
 
 This work is deliberately kept separate from the BrowserOS MCP browser
 backend proposed in issue
@@ -46,13 +46,13 @@ an interactive browser drives a session.
 - Produce normalized, structured discovery artifacts that capture URLs,
   HTTP methods, status codes, forms, parameters, JavaScript endpoints,
   the source page, crawl depth, and the in-scope/out-of-scope decision.
-- Let PentAGI agents use crawler output to seed `ffuf`/`dirsearch`-style
+- Let NullHawk agents use crawler output to seed `ffuf`/`dirsearch`-style
   content discovery, guide browser checks, reduce repeated manual
   enumeration, and enrich reports.
 - Keep the capability secure by default: disabled unless enabled, scoped
   to the authorized target, rate limited, and bounded by depth, page,
   and request limits.
-- Reuse PentAGI's existing URL classification and screenshot/evidence
+- Reuse NullHawk's existing URL classification and screenshot/evidence
   paths where practical instead of inventing parallel infrastructure.
 - Keep crawler discovery clearly separated from the BrowserOS MCP
   interactive browser backend.
@@ -80,7 +80,7 @@ an interactive browser drives a session.
 
 ## Current Browser and Discovery Behavior
 
-PentAGI already has two relevant building blocks, but neither performs
+NullHawk already has two relevant building blocks, but neither performs
 structured crawling.
 
 The browser tool in `backend/pkg/tools/browser.go` is scraper-backed and
@@ -104,7 +104,7 @@ testing guidance already lists crawler-adjacent tools (for example
 with a reminder to verify availability and install missing tools in the
 current image. This means a crawler such as `katana` can in principle be
 invoked today, but only as an ad-hoc terminal command. Its output is
-unstructured stdout, it is not scoped or budgeted by PentAGI, the
+unstructured stdout, it is not scoped or budgeted by NullHawk, the
 results are not normalized into a reusable artifact, and nothing feeds
 the discovered routes back into `ffuf`, the browser tool, or the report.
 
@@ -141,7 +141,7 @@ Proposed shape of the capability:
   found it, and the scope decision.
 - Agent-facing result: a concise text summary for the agent (counts,
   notable routes, limits reached) plus the structured artifact stored
-  through PentAGI's existing artifact and memory paths, mirroring how the
+  through NullHawk's existing artifact and memory paths, mirroring how the
   browser tool returns text while saving screenshots.
 
 The capability is observation-focused. It maps what exists; it does not
@@ -201,7 +201,7 @@ Proposed selection model:
   downstream consumers do not depend on which CLI produced the result.
 
 No single tool is promoted to a required default. `katana` is a
-reasonable first candidate because it already appears in PentAGI's tool
+reasonable first candidate because it already appears in NullHawk's tool
 guidance and supports structured output, but the RFC frames it as one
 option among several, not a mandate.
 
@@ -217,7 +217,7 @@ Illustrative workflow:
 
 1. Early in a web engagement, the pentester agent runs crawler discovery
    against the authorized target within scope and budget limits.
-2. The normalized artifact is stored through PentAGI's artifact and
+2. The normalized artifact is stored through NullHawk's artifact and
    long-term memory paths so it is reusable across subtasks rather than
    re-derived.
 3. Discovered directories, file extensions, and parameter names seed
@@ -234,7 +234,7 @@ Illustrative workflow:
    from the artifact, reducing repeated manual enumeration and giving
    reviewers a clear map of the attack surface.
 
-This fits PentAGI's existing flow/task/subtask model and result tools
+This fits NullHawk's existing flow/task/subtask model and result tools
 (for example `hack_result` and `report_result`) and its RAG memory,
 without introducing hidden lifecycle state. The crawl is an explicit
 tool call with a visible, inspectable artifact.
@@ -326,7 +326,7 @@ Required safety properties:
   discovery of forms is in scope; submitting forms (which mutates target
   state) is a separate, gated capability and is not default behavior.
 
-These properties keep the capability aligned with PentAGI's lawful
+These properties keep the capability aligned with NullHawk's lawful
 pentesting posture: it maps the authorized attack surface, it does not
 broaden scope, automate accounts, or take state-changing actions without
 an explicit decision.
@@ -384,7 +384,7 @@ Implementation notes for a future PR:
 - Tool identifiers and flags here are illustrative. A real
   implementation must validate the canonical tool invocation and output
   format for each backend before normalizing it.
-- Scope and SSRF checks should integrate with PentAGI's existing URL
+- Scope and SSRF checks should integrate with NullHawk's existing URL
   classification rather than re-implementing target analysis.
 - The final storage mechanism (mounted YAML, database-backed settings,
   existing tool configuration, or another maintainer-approved shape) is

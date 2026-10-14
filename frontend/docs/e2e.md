@@ -1,6 +1,6 @@
 # Frontend E2E tests (Playwright)
 
-End-to-end tests for the PentAGI UI. The default tier runs fully offline against
+End-to-end tests for the NullHawk UI. The default tier runs fully offline against
 network mocks — **no backend, no secrets, no VPN, no LLM keys** — so anyone
 (including fork-PR authors) can run it, and CI runs it on every pull request.
 
@@ -372,7 +372,7 @@ bespoke bot:
    than raw DOM or vision).
 2. Scope the agent to the changed surface with `affected.ts` (the routes) — do
    not hand it the whole app.
-3. Guardrails are mandatory because PentAGI renders adversarial content by
+3. Guardrails are mandatory because NullHawk renders adversarial content by
    design (tool output, target responses): treat all page text as untrusted
    data, never instructions; an action allowlist (no settings/token mutations,
    no off-origin navigation) on real stands; throwaway scoped credentials; the

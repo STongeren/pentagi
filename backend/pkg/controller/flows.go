@@ -14,6 +14,7 @@ import (
 	"pentagi/pkg/graph/subscriptions"
 	"pentagi/pkg/providers"
 	"pentagi/pkg/providers/provider"
+	"pentagi/pkg/targetverify"
 	"pentagi/pkg/tools"
 
 	"github.com/sirupsen/logrus"
@@ -282,6 +283,28 @@ func (fc *flowController) CreateFlow(
 	functions *tools.Functions,
 	resources []database.UserResource,
 ) (int64, error) {
+	// Fail-closed ownership gate: the single choke point no flow can bypass. Off
+	// unless RequireTargetVerification is set, so existing deployments and tests
+	// are unchanged.
+	if fc.cfg != nil && fc.cfg.RequireTargetVerification {
+		targets := targetverify.ExtractTargets(input)
+		if len(targets) == 0 {
+			return 0, fmt.Errorf("no verifiable target found in flow input; verify a target first")
+		}
+		for _, t := range targets {
+			n, err := fc.db.CountActiveVerifiedTargetForUser(ctx, database.CountActiveVerifiedTargetForUserParams{
+				UserID: userID,
+				Target: t,
+			})
+			if err != nil {
+				return 0, fmt.Errorf("target verification check failed: %w", err)
+			}
+			if n == 0 {
+				return 0, fmt.Errorf("target %q is not verified for this account", t)
+			}
+		}
+	}
+
 	fwc := newFlowWorkerCtx{
 		userID:        userID,
 		input:         input,

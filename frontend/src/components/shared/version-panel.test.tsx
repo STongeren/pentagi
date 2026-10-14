@@ -38,9 +38,9 @@ function info(overrides: Partial<VersionInfoFragmentFragment> = {}): VersionInfo
     };
 }
 
-const trigger = () => screen.getByRole('button', { name: /PentAGI v2\.1\.0/ });
+const trigger = () => screen.getByRole('button', { name: /NullHawk v2\.1\.0/ });
 
-function renderPanel({ isOpen = true, title = 'PentAGI' } = {}) {
+function renderPanel({ isOpen = true, title = 'NullHawk' } = {}) {
     return render(
         <SidebarProvider defaultOpen={isOpen}>
             <VersionPanel
@@ -60,7 +60,7 @@ describe('VersionPanel', () => {
         provider.value = { isLoading: true, versionInfo: null };
         renderPanel();
 
-        expect(screen.getByText('PentAGI')).toBeInTheDocument();
+        expect(screen.getByText('NullHawk')).toBeInTheDocument();
         expect(screen.getByTestId('probe-icon')).toBeInTheDocument();
         expect(screen.getByTestId('skeleton')).toBeInTheDocument();
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
@@ -77,7 +77,7 @@ describe('VersionPanel', () => {
     it('keeps the icon and the title, and no placeholder, when the query settles without an answer', () => {
         renderPanel();
 
-        expect(screen.getByText('PentAGI')).toBeInTheDocument();
+        expect(screen.getByText('NullHawk')).toBeInTheDocument();
         expect(screen.getByTestId('probe-icon')).toBeInTheDocument();
         expect(screen.queryByTestId('skeleton')).not.toBeInTheDocument();
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
@@ -162,11 +162,11 @@ describe('VersionPanel', () => {
 
         const dialog = await screen.findByRole('menu');
 
-        expect(dialog).toHaveTextContent('PentAGI v2.1.0');
+        expect(dialog).toHaveTextContent('NullHawk v2.1.0');
         expect(dialog).toHaveTextContent('build b1d7c0de');
         expect(dialog).toHaveTextContent('stable');
         expect(dialog).toHaveTextContent('New version v2.4.0 is available');
-        expect(dialog).toHaveTextContent('Run the installer tool on the host where PentAGI is deployed');
+        expect(dialog).toHaveTextContent('Run the installer tool on the host where NullHawk is deployed');
         expect(dialog).toHaveTextContent('Installed');
         expect(dialog).toHaveTextContent('Available');
         expect(dialog).toHaveTextContent('Checked');
@@ -221,7 +221,7 @@ describe('VersionPanel', () => {
         };
         renderPanel();
 
-        await user.click(screen.getByRole('button', { name: /PentAGI v2\.1\.0-ce/ }));
+        await user.click(screen.getByRole('button', { name: /NullHawk v2\.1\.0-ce/ }));
 
         expect(await screen.findByRole('menu')).toHaveTextContent('build b1d7c0de');
     });
@@ -231,7 +231,7 @@ describe('VersionPanel', () => {
         provider.value = { isLoading: false, versionInfo: info({ current: 'ce.h93e99748' }) };
         renderPanel();
 
-        await user.click(screen.getByRole('button', { name: /PentAGI ce/ }));
+        await user.click(screen.getByRole('button', { name: /NullHawk ce/ }));
 
         expect(await screen.findByRole('menu')).toHaveTextContent('build b1d7c0de');
     });
@@ -263,7 +263,7 @@ describe('splitVersion', () => {
         expect(splitVersion('ce')).toEqual({ revision: null, version: 'ce' });
     });
 
-    // The hyphen form is not what PentAGI stamps; it is what a binary built by
+    // The hyphen form is not what NullHawk stamps; it is what a binary built by
     // hand with only -X PackageRev can carry, and the panel still splits it.
     it('separates a revision joined by a hyphen', () => {
         expect(splitVersion('2.1.0-93e99748')).toEqual({ revision: '93e99748', version: '2.1.0' });
@@ -329,7 +329,7 @@ describe('describeVersion', () => {
         const presentation = describeVersion(info());
 
         expect(presentation.indicator).toBe('none');
-        expect(presentation.tooltip).toBe('PentAGI v2.1.0 is up to date.');
+        expect(presentation.tooltip).toBe('NullHawk v2.1.0 is up to date.');
         expect(presentation.detail).toContain('preview channel');
         expect(presentation.action).toBeNull();
     });

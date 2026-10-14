@@ -1,7 +1,7 @@
-# PentAGI Observability Stack
+# NullHawk Observability Stack
 
 ## Table of Contents
-- [PentAGI Observability Stack](#pentagi-observability-stack)
+- [NullHawk Observability Stack](#pentagi-observability-stack)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Architecture](#architecture)
@@ -47,7 +47,7 @@
 
 ## Overview
 
-The PentAGI Observability Stack provides comprehensive monitoring, logging, tracing, and metrics collection for the application. It integrates multiple technologies to provide a complete view of the application's behavior, performance, and health:
+The NullHawk Observability Stack provides comprehensive monitoring, logging, tracing, and metrics collection for the application. It integrates multiple technologies to provide a complete view of the application's behavior, performance, and health:
 
 - **Logging**: Enhanced logrus integration with structured logging and context propagation
 - **Tracing**: Distributed tracing with OpenTelemetry and Jaeger
@@ -65,7 +65,7 @@ The Observability stack is built as a set of layered interfaces that integrate m
 
 ```mermaid
 flowchart TD
-    App[PentAGI Application] --> Observer[Observability Interface]
+    App[NullHawk Application] --> Observer[Observability Interface]
 
     subgraph ObservabilityComponents
         Observer --> Tracer[Tracer Interface]
@@ -100,7 +100,7 @@ flowchart TD
 
 ```mermaid
 sequenceDiagram
-    participant App as PentAGI App
+    participant App as NullHawk App
     participant Obs as Observability
     participant OTEL as OpenTelemetry
     participant Lf as Langfuse
@@ -793,11 +793,11 @@ go tool trace trace.out
 
 ## Application Instrumentation Patterns
 
-PentAGI uses several patterns for instrumenting different parts of the application. These patterns demonstrate best practices for integrating the observability stack.
+NullHawk uses several patterns for instrumenting different parts of the application. These patterns demonstrate best practices for integrating the observability stack.
 
 ### HTTP Server Instrumentation
 
-The PentAGI application uses a Gin middleware to instrument HTTP requests, located in `pkg/server/logger/logger.go`:
+The NullHawk application uses a Gin middleware to instrument HTTP requests, located in `pkg/server/logger/logger.go`:
 
 ```go
 // WithGinLogger creates a middleware that logs HTTP requests with tracing
@@ -871,7 +871,7 @@ router.Use(logger.WithGinLogger("api-service"))
 
 ### GraphQL Instrumentation
 
-PentAGI also provides instrumentation for GraphQL operations:
+NullHawk also provides instrumentation for GraphQL operations:
 
 ```go
 // WithGqlLogger creates middleware that instruments GraphQL operations

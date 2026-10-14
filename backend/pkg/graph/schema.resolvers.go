@@ -21,6 +21,7 @@ import (
 	"pentagi/pkg/resources"
 	"pentagi/pkg/server/auth"
 	"pentagi/pkg/server/update"
+	"pentagi/pkg/targetverify"
 	"pentagi/pkg/templates"
 	"pentagi/pkg/templates/validator"
 	"pentagi/pkg/version"
@@ -1315,6 +1316,112 @@ func (r *mutationResolver) AnonymizeText(ctx context.Context, text string) (stri
 	return r.Replacer.ReplaceString(text), nil
 }
 
+// RequestTargetVerification is the resolver for the requestTargetVerification field.
+func (r *mutationResolver) RequestTargetVerification(ctx context.Context, target string, method model.TargetVerificationMethod) (*model.VerifiedTarget, error) {
+	uid, _, err := validatePermission(ctx, "targets.create")
+	if err != nil {
+		return nil, err
+	}
+
+	norm, err := targetverify.NormalizeTarget(target)
+	if err != nil {
+		return nil, err
+	}
+
+	token, err := targetverify.GenerateToken()
+	if err != nil {
+		return nil, err
+	}
+
+	row, err := r.DB.CreateVerifiedTarget(ctx, database.CreateVerifiedTargetParams{
+		UserID: uid,
+		Target: norm,
+		Method: database.TargetVerificationMethod(method),
+		Token:  token,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return convertVerifiedTarget(row), nil
+}
+
+// CheckTargetVerification is the resolver for the checkTargetVerification field.
+func (r *mutationResolver) CheckTargetVerification(ctx context.Context, id int64) (*model.VerifiedTarget, error) {
+	uid, _, err := validatePermission(ctx, "targets.verify")
+	if err != nil {
+		return nil, err
+	}
+
+	row, err := r.DB.GetVerifiedTargetByID(ctx, database.GetVerifiedTargetByIDParams{ID: id, UserID: uid})
+	if err != nil {
+		return nil, err
+	}
+
+	if verr := targetverify.Verify(ctx, targetverify.Method(row.Method),
+		targetverify.ResolverLookuper(nil), row.Target, row.Token); verr != nil {
+		row, err = r.DB.MarkVerifiedTargetFailed(ctx, database.MarkVerifiedTargetFailedParams{
+			ID:        id,
+			UserID:    uid,
+			LastError: sql.NullString{String: verr.Error(), Valid: true},
+		})
+		if err != nil {
+			return nil, err
+		}
+		return convertVerifiedTarget(row), nil
+	}
+
+	row, err = r.DB.MarkVerifiedTargetVerified(ctx, database.MarkVerifiedTargetVerifiedParams{
+		ID:        id,
+		UserID:    uid,
+		ExpiresAt: sql.NullTime{Time: time.Now().Add(90 * 24 * time.Hour), Valid: true},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return convertVerifiedTarget(row), nil
+}
+
+// DeleteVerifiedTarget is the resolver for the deleteVerifiedTarget field.
+func (r *mutationResolver) DeleteVerifiedTarget(ctx context.Context, id int64) (model.ResultType, error) {
+	uid, _, err := validatePermission(ctx, "targets.delete")
+	if err != nil {
+		return model.ResultTypeError, err
+	}
+
+	if err := r.DB.SoftDeleteVerifiedTarget(ctx, database.SoftDeleteVerifiedTargetParams{ID: id, UserID: uid}); err != nil {
+		return model.ResultTypeError, err
+	}
+
+	return model.ResultTypeSuccess, nil
+}
+
+// convertVerifiedTarget maps a stored row to its GraphQL shape. The DB enum
+// string values match the GraphQL enum values, so the method/status casts are
+// direct.
+func convertVerifiedTarget(vt database.VerifiedTarget) *model.VerifiedTarget {
+	m := &model.VerifiedTarget{
+		ID:        vt.ID,
+		Target:    vt.Target,
+		Method:    model.TargetVerificationMethod(vt.Method),
+		Token:     vt.Token,
+		Status:    model.TargetVerificationStatus(vt.Status),
+		CreatedAt: vt.CreatedAt.Time,
+		UpdatedAt: vt.UpdatedAt.Time,
+	}
+	if vt.LastError.Valid {
+		m.LastError = &vt.LastError.String
+	}
+	if vt.VerifiedAt.Valid {
+		m.VerifiedAt = &vt.VerifiedAt.Time
+	}
+	if vt.ExpiresAt.Valid {
+		m.ExpiresAt = &vt.ExpiresAt.Time
+	}
+	return m
+}
+
 // Providers is the resolver for the providers field.
 func (r *queryResolver) Providers(ctx context.Context) ([]*model.Provider, error) {
 	uid, _, err := validatePermission(ctx, "providers.view")
@@ -2421,6 +2528,26 @@ func (r *queryResolver) APITokens(ctx context.Context) ([]*model.APIToken, error
 	}
 
 	return converter.ConvertAPITokens(tokens), nil
+}
+
+// VerifiedTargets is the resolver for the verifiedTargets field.
+func (r *queryResolver) VerifiedTargets(ctx context.Context) ([]*model.VerifiedTarget, error) {
+	uid, _, err := validatePermission(ctx, "targets.view")
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := r.DB.GetUserVerifiedTargets(ctx, uid)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]*model.VerifiedTarget, 0, len(rows))
+	for _, row := range rows {
+		result = append(result, convertVerifiedTarget(row))
+	}
+
+	return result, nil
 }
 
 // FlowTemplate is the resolver for the flowTemplate field.

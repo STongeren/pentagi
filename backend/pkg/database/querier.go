@@ -13,6 +13,7 @@ type Querier interface {
 	AddFavoriteFlow(ctx context.Context, arg AddFavoriteFlowParams) (UserPreference, error)
 	CountAPITokens(ctx context.Context) (int64, error)
 	CountActiveFlows(ctx context.Context) (int64, error)
+	CountActiveVerifiedTargetForUser(ctx context.Context, arg CountActiveVerifiedTargetForUserParams) (int64, error)
 	CountAssistants(ctx context.Context) (int64, error)
 	CountContainers(ctx context.Context) (int64, error)
 	CountFlowTemplates(ctx context.Context) (int64, error)
@@ -44,6 +45,7 @@ type Querier interface {
 	CreateUserPreferences(ctx context.Context, arg CreateUserPreferencesParams) (UserPreference, error)
 	CreateUserPrompt(ctx context.Context, arg CreateUserPromptParams) (Prompt, error)
 	CreateVectorStoreLog(ctx context.Context, arg CreateVectorStoreLogParams) (Vecstorelog, error)
+	CreateVerifiedTarget(ctx context.Context, arg CreateVerifiedTargetParams) (VerifiedTarget, error)
 	DeleteAPIToken(ctx context.Context, id int64) (ApiToken, error)
 	DeleteAssistant(ctx context.Context, id int64) (Assistant, error)
 	DeleteFavoriteFlow(ctx context.Context, arg DeleteFavoriteFlowParams) (UserPreference, error)
@@ -245,7 +247,10 @@ type Querier interface {
 	// Get total toolcalls stats for a user
 	GetUserTotalToolcallsStats(ctx context.Context, userID int64) (GetUserTotalToolcallsStatsRow, error)
 	GetUserTotalUsageStats(ctx context.Context, userID int64) (GetUserTotalUsageStatsRow, error)
+	GetUserVerifiedTarget(ctx context.Context, arg GetUserVerifiedTargetParams) (VerifiedTarget, error)
+	GetUserVerifiedTargets(ctx context.Context, userID int64) ([]VerifiedTarget, error)
 	GetUsers(ctx context.Context) ([]GetUsersRow, error)
+	GetVerifiedTargetByID(ctx context.Context, arg GetVerifiedTargetByIDParams) (VerifiedTarget, error)
 	// Insert a document with a pre-computed embedding vector and return its UUID.
 	// embedding must be formatted as a PostgreSQL vector literal: '[f1,f2,...]'
 	// cmetadata must be valid JSON text.
@@ -256,6 +261,8 @@ type Querier interface {
 	ListFlowKnowledgeDocuments(ctx context.Context, flowID sql.NullString) ([]ListFlowKnowledgeDocumentsRow, error)
 	// List all non-memory knowledge documents owned by a specific user (user-scoped view).
 	ListUserKnowledgeDocuments(ctx context.Context, userID sql.NullString) ([]ListUserKnowledgeDocumentsRow, error)
+	MarkVerifiedTargetFailed(ctx context.Context, arg MarkVerifiedTargetFailedParams) (VerifiedTarget, error)
+	MarkVerifiedTargetVerified(ctx context.Context, arg MarkVerifiedTargetVerifiedParams) (VerifiedTarget, error)
 	SaveAssistantLog(ctx context.Context, arg SaveAssistantLogParams) error
 	SaveAssistantLogContent(ctx context.Context, arg SaveAssistantLogContentParams) error
 	// Vector similarity search over all knowledge documents (admin view, no user filter).
@@ -272,6 +279,7 @@ type Querier interface {
 	// lim          maximum number of rows to return
 	// user_id      owner filter as a decimal text string (e.g. "42")
 	SearchUserKnowledgeDocuments(ctx context.Context, arg SearchUserKnowledgeDocumentsParams) ([]SearchUserKnowledgeDocumentsRow, error)
+	SoftDeleteVerifiedTarget(ctx context.Context, arg SoftDeleteVerifiedTargetParams) error
 	UpdateAPIToken(ctx context.Context, arg UpdateAPITokenParams) (ApiToken, error)
 	UpdateAssistant(ctx context.Context, arg UpdateAssistantParams) (Assistant, error)
 	UpdateAssistantLanguage(ctx context.Context, arg UpdateAssistantLanguageParams) (Assistant, error)

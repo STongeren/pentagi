@@ -1,7 +1,7 @@
 # Processor Implementation Summary
 
 ## Overview
-Processor package implements the operational engine for PentAGI installer operations per [processor.md](processor.md). Core lifecycle flows, file integrity logic, Docker/Compose orchestration, and Bubble Tea integration are implemented. Cloud-facing work — the update check, the installer download and the Jaeger storage plugin — is implemented too and talks to the PentAGI Cloud API through `cmd/installer/cloud`. Post-update verification is implemented as well, but it makes no request of its own: it compares the components observed after the update against targets captured locally from the answer that was already in hand.
+Processor package implements the operational engine for NullHawk installer operations per [processor.md](processor.md). Core lifecycle flows, file integrity logic, Docker/Compose orchestration, and Bubble Tea integration are implemented. Cloud-facing work — the update check, the installer download and the Jaeger storage plugin — is implemented too and talks to the NullHawk Cloud API through `cmd/installer/cloud`. Post-update verification is implemented as well, but it makes no request of its own: it compares the components observed after the update against targets captured locally from the answer that was already in hand.
 
 ## Implementation Notes
 
@@ -9,7 +9,7 @@ Processor package implements the operational engine for PentAGI installer operat
 - **Interface-based design**: Internal interfaces per operation type (`fileSystemOperations`, `dockerOperations`, `composeOperations`, `updateOperations`) enable separation of concerns and testability
 - **Two-track execution**: Docker API SDK for worker environment; Compose stacks via console commands with live output streaming
 - **OperationOption pattern**: Functional options applied to an internal `operationState` support force mode, embedded terminal integration and the reset-password value via `WithForce`, `WithTerminal` and `WithPasswordValue`
-- **State machine logic**: `ApplyChanges` implements four-phase stack management (Observability → Langfuse → Graphiti → PentAGI) with integrity validation; the wizard performs a pre-phase interactive integrity check with Y/N decision for force mode
+- **State machine logic**: `ApplyChanges` implements four-phase stack management (Observability → Langfuse → Graphiti → NullHawk) with integrity validation; the wizard performs a pre-phase interactive integrity check with Y/N decision for force mode
 - **Single-responsibility operations**: business logic delegates to compose layer; strict purge of images is implemented as `purgeImagesStack` alongside other compose operations
 - **One lock for everything**: every entry point on `Processor` takes the processor mutex, including `InstallerPackage`, which changes nothing. It takes it because it *remembers* something the download that follows will read — see [Installer package description](#installer-package-description)
 
@@ -45,7 +45,7 @@ Processor package implements the operational engine for PentAGI installer operat
    - Proper cleanup ordering and external/existing deployment handling
 
 ### Critical Implementation Details
-- **Four-phase execution**: Observability → Langfuse → Graphiti → PentAGI with state validation after each phase
+- **Four-phase execution**: Observability → Langfuse → Graphiti → NullHawk with state validation after each phase
 - **Force mode behavior**: Aggressive file overwriting and state correction when explicitly requested
 - **File integrity logic**: `ensureStackIntegrity` for missing files, `verifyStackIntegrity` for existing files; modified files are explicitly skipped and logged when `force=false`; excluded files are ensured to exist but not overwritten when modified
 - **State consistency**: `Gather*Info` calls after each phase validate operation success

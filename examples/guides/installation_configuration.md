@@ -1,13 +1,13 @@
-# Installing and Configuring PentAGI
+# Installing and Configuring NullHawk
 
-This guide is the bridge between installing PentAGI and using it. It walks you through a first deployment in order: pick an installation method, set the core server variables, configure and test at least one LLM provider, configure the embedding provider, optionally add search and observability, then start the stack and verify it before your first login.
+This guide is the bridge between installing NullHawk and using it. It walks you through a first deployment in order: pick an installation method, set the core server variables, configure and test at least one LLM provider, configure the embedding provider, optionally add search and observability, then start the stack and verify it before your first login.
 
-It is intentionally concise and links to the detailed reference sections in the main [README](https://github.com/vxcontrol/pentagi#readme) instead of repeating them. When you finish here, continue with [How to Use PentAGI After Login](https://github.com/vxcontrol/pentagi#how-to-use-pentagi-after-login).
+It is intentionally concise and links to the detailed reference sections in the main [README](https://github.com/vxcontrol/pentagi#readme) instead of repeating them. When you finish here, continue with [How to Use NullHawk After Login](https://github.com/vxcontrol/pentagi#how-to-use-pentagi-after-login).
 
 ## Before you start
 
 - Docker and Docker Compose (or Podman), 2+ vCPU, 4+ GB RAM, 20+ GB free disk, and outbound internet access for pulling images and reaching LLM providers.
-- At least one LLM provider you can authenticate to (OpenAI, Anthropic, Gemini, AWS Bedrock, or a local/Ollama/OpenAI-compatible backend). PentAGI will not run without one.
+- At least one LLM provider you can authenticate to (OpenAI, Anthropic, Gemini, AWS Bedrock, or a local/Ollama/OpenAI-compatible backend). NullHawk will not run without one.
 - Decide how you want to install: the interactive installer (recommended) or a manual Docker Compose deployment.
 
 ## Step 1 - Choose an installation method
@@ -31,7 +31,7 @@ Whichever method you used, confirm these in your `.env` before exposing the inst
 - `PENTAGI_LISTEN_IP` / `PENTAGI_LISTEN_PORT` - keep the default `127.0.0.1` for localhost-only, or set the IP to `0.0.0.0` to accept external connections.
 - `COOKIE_SIGNING_SALT` and the database passwords (`PENTAGI_POSTGRES_PASSWORD`, `NEO4J_PASSWORD`) - change these away from the defaults before real use.
 
-For external access, firewall rules, and certificate notes, see [Accessing PentAGI from External Networks](https://github.com/vxcontrol/pentagi#accessing-pentagi-from-external-networks).
+For external access, firewall rules, and certificate notes, see [Accessing NullHawk from External Networks](https://github.com/vxcontrol/pentagi#accessing-pentagi-from-external-networks).
 
 ## Step 3 - Configure and test an LLM provider
 
@@ -43,7 +43,7 @@ Set the credentials for at least one provider in `.env`. Each provider has its o
 - [AWS Bedrock](https://github.com/vxcontrol/pentagi#aws-bedrock-provider-configuration) (`BEDROCK_REGION` plus one auth method)
 - [Custom OpenAI-compatible / local](https://github.com/vxcontrol/pentagi#custom-llm-provider-configuration) (`LLM_SERVER_URL`, `LLM_SERVER_KEY`, `LLM_SERVER_MODEL`) and [Ollama](https://github.com/vxcontrol/pentagi#ollama-provider-configuration)
 
-Before starting a full flow, confirm the provider actually answers and supports the agent behaviors PentAGI needs by running `ctester`:
+Before starting a full flow, confirm the provider actually answers and supports the agent behaviors NullHawk needs by running `ctester`:
 
 ```bash
 # From a local Go environment (run inside the backend directory)
@@ -53,11 +53,11 @@ go run ./cmd/ctester -verbose
 docker exec -it pentagi /opt/pentagi/bin/ctester -verbose
 ```
 
-Full usage, including `-type`, `-config`, and per-agent testing, is in [Testing LLM Agents](https://github.com/vxcontrol/pentagi#testing-llm-agents). If `ctester` reports tool-call or function-call problems with a custom, llama.cpp, vLLM, or SGLang backend, that points at the backend's tool-call parser rather than PentAGI itself.
+Full usage, including `-type`, `-config`, and per-agent testing, is in [Testing LLM Agents](https://github.com/vxcontrol/pentagi#testing-llm-agents). If `ctester` reports tool-call or function-call problems with a custom, llama.cpp, vLLM, or SGLang backend, that points at the backend's tool-call parser rather than NullHawk itself.
 
 ## Step 4 - Configure and test the embedding provider
 
-PentAGI uses embeddings for semantic search, knowledge storage, and memory. The default provider is OpenAI; when `EMBEDDING_URL` and `EMBEDDING_KEY` are empty and `EMBEDDING_PROVIDER=openai`, it falls back to your `OPEN_AI_SERVER_URL` and `OPEN_AI_KEY`. Relevant variables: `EMBEDDING_PROVIDER`, `EMBEDDING_MODEL`, `EMBEDDING_URL`, `EMBEDDING_KEY`, `EMBEDDING_BATCH_SIZE`, `EMBEDDING_MAX_TEXT_BYTES`, `EMBEDDING_STRIP_NEW_LINES`.
+NullHawk uses embeddings for semantic search, knowledge storage, and memory. The default provider is OpenAI; when `EMBEDDING_URL` and `EMBEDDING_KEY` are empty and `EMBEDDING_PROVIDER=openai`, it falls back to your `OPEN_AI_SERVER_URL` and `OPEN_AI_KEY`. Relevant variables: `EMBEDDING_PROVIDER`, `EMBEDDING_MODEL`, `EMBEDDING_URL`, `EMBEDDING_KEY`, `EMBEDDING_BATCH_SIZE`, `EMBEDDING_MAX_TEXT_BYTES`, `EMBEDDING_STRIP_NEW_LINES`.
 
 Verify embeddings with `etester`:
 
@@ -73,7 +73,7 @@ If you later change the embedding provider or model, flush and reindex the knowl
 
 ## Step 5 - (Optional) Configure search providers
 
-Search providers improve research quality but are optional. PentAGI supports DuckDuckGo (`DUCKDUCKGO_ENABLED`), Sploitus (`SPLOITUS_ENABLED`), Google (`GOOGLE_API_KEY`, `GOOGLE_CX_KEY`), Tavily (`TAVILY_API_KEY`), Firecrawl (`FIRECRAWL_API_KEY`), Traversaal (`TRAVERSAAL_API_KEY`), Perplexity (`PERPLEXITY_API_KEY`), a self-hosted Searxng instance (`SEARXNG_URL`), and an optional internal browser-analytics fallback engine (`WEB_SEARCH_INTERNAL_ENABLED`, off by default). Set the keys for the engines you want in `.env`; the manual installation section shows the full block of search variables.
+Search providers improve research quality but are optional. NullHawk supports DuckDuckGo (`DUCKDUCKGO_ENABLED`), Sploitus (`SPLOITUS_ENABLED`), Google (`GOOGLE_API_KEY`, `GOOGLE_CX_KEY`), Tavily (`TAVILY_API_KEY`), Firecrawl (`FIRECRAWL_API_KEY`), Traversaal (`TRAVERSAAL_API_KEY`), Perplexity (`PERPLEXITY_API_KEY`), a self-hosted Searxng instance (`SEARXNG_URL`), and an optional internal browser-analytics fallback engine (`WEB_SEARCH_INTERNAL_ENABLED`, off by default). Set the keys for the engines you want in `.env`; the manual installation section shows the full block of search variables.
 
 ## Step 6 - (Optional) Enable Graphiti, Langfuse, and observability
 
@@ -92,7 +92,7 @@ Run the base `docker-compose.yml` first so the shared Docker networks exist, the
 3. Re-run `ctester` and `etester` if you changed any provider settings. For deeper checks of individual agent functions and tools, use `ftester` (see [Function Testing with ftester](https://github.com/vxcontrol/pentagi#function-testing-with-ftester)).
 4. Open `https://localhost:8443` (or your `PUBLIC_URL`) and sign in with the default `admin@pentagi.com` / `admin`, then change the password immediately.
 
-After the server is running, several areas are managed in the web console under Settings (Providers, Prompts, PentAGI API tokens), while LLM and search credentials, Langfuse and Graphiti remain server-side configuration. See [Current Web Settings Coverage](https://github.com/vxcontrol/pentagi#current-web-settings-coverage) for the exact split.
+After the server is running, several areas are managed in the web console under Settings (Providers, Prompts, NullHawk API tokens), while LLM and search credentials, Langfuse and Graphiti remain server-side configuration. See [Current Web Settings Coverage](https://github.com/vxcontrol/pentagi#current-web-settings-coverage) for the exact split.
 
 ## First-run configuration checklist
 
@@ -108,6 +108,6 @@ After the server is running, several areas are managed in the web console under 
 
 ## Next step
 
-Continue with [How to Use PentAGI After Login](https://github.com/vxcontrol/pentagi#how-to-use-pentagi-after-login) to create your first flow, use prompt templates, and review results.
+Continue with [How to Use NullHawk After Login](https://github.com/vxcontrol/pentagi#how-to-use-pentagi-after-login) to create your first flow, use prompt templates, and review results.
 
 For hardened or fully local deployments, see the [Worker Node Setup](worker_node.md) and [vLLM + Qwen3.5-27B-FP8](vllm-qwen35-27b-fp8.md) guides.

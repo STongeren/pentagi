@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `checker` package is responsible for gathering system facts and verifying installation prerequisites for PentAGI. It performs comprehensive system analysis to determine the current state of the installation and what operations are available.
+The `checker` package is responsible for gathering system facts and verifying installation prerequisites for NullHawk. It performs comprehensive system analysis to determine the current state of the installation and what operations are available.
 
 ## Architecture
 
@@ -17,7 +17,7 @@ The `checker` package is responsible for gathering system facts and verifying in
 
 #### CheckResult Structure
 Central data structure that holds all system check results:
-- Installation status for each component (PentAGI, Graphiti, Langfuse, Observability)
+- Installation status for each component (NullHawk, Graphiti, Langfuse, Observability)
 - System resource availability (CPU, memory, disk)
 - Docker environment status
 - Network connectivity status
@@ -57,14 +57,14 @@ type CheckHandler interface {
 ### 2. Component Installation Checks
 - **File Existence**: Verifies presence of docker-compose files
 - **Container Status**: Checks if containers exist and their running state
-- **Script Installation**: Verifies PentAGI CLI script in /usr/local/bin
+- **Script Installation**: Verifies NullHawk CLI script in /usr/local/bin
 
 ### 3. System Resource Checks
 - **Write Permissions**: Verifies write access to configuration directory
 - **CPU**: Minimum 2 CPU cores required
 - **Memory**: Dynamic calculation based on components to be installed
   - Base: 0.5GB free
-  - PentAGI: +0.5GB
+  - NullHawk: +0.5GB
   - Graphiti: +2GB
   - Langfuse: +1.5GB
   - Observability: +1.5GB
@@ -86,17 +86,17 @@ The current checker validates Docker Hub reachability by resolving `docker.io`, 
 Recommended remediation order:
 
 1. Confirm general internet access and DNS resolution for `docker.io`
-2. If your environment requires an outbound proxy for installer or PentAGI HTTP traffic, set the `PROXY_URL` environment variable. To route Docker image pulls through a proxy, configure the Docker daemon or Docker Desktop proxy separately — Docker does not use `PROXY_URL` for registry access.
+2. If your environment requires an outbound proxy for installer or NullHawk HTTP traffic, set the `PROXY_URL` environment variable. To route Docker image pulls through a proxy, configure the Docker daemon or Docker Desktop proxy separately — Docker does not use `PROXY_URL` for registry access.
 3. If Docker Hub is blocked or rate-limited, configure an organization-approved Docker registry mirror or registry proxy at the Docker daemon / Docker Desktop level
 4. Restart Docker and rerun the installer checks
 
-PentAGI variables such as `PENTAGI_IMAGE`, `DOCKER_DEFAULT_IMAGE`, and `DOCKER_DEFAULT_IMAGE_FOR_PENTEST` do not replace Docker daemon registry configuration. They only influence the PentAGI application image or worker image selection after Docker is already able to pull the required images. Note that the main Compose stack already includes a service from `quay.io` (`postgres-exporter`), the optional observability stack includes an image from `gcr.io`, and the optional Langfuse stack includes one from `cgr.dev` (`minio`). A Docker Hub mirror alone is therefore not sufficient for a full deployment — those registries also need to be reachable or individually mirrored.
+NullHawk variables such as `PENTAGI_IMAGE`, `DOCKER_DEFAULT_IMAGE`, and `DOCKER_DEFAULT_IMAGE_FOR_PENTEST` do not replace Docker daemon registry configuration. They only influence the NullHawk application image or worker image selection after Docker is already able to pull the required images. Note that the main Compose stack already includes a service from `quay.io` (`postgres-exporter`), the optional observability stack includes an image from `gcr.io`, and the optional Langfuse stack includes one from `cgr.dev` (`minio`). A Docker Hub mirror alone is therefore not sufficient for a full deployment — those registries also need to be reachable or individually mirrored.
 
 See Docker's official documentation for [registry mirrors](https://docs.docker.com/docker-hub/image-library/mirror/) and [daemon proxy configuration](https://docs.docker.com/engine/daemon/proxy/).
 
 ### 5. Update Availability Checks
 
-`GatherUpdatesInfo` (`checker/updates.go`) asks the PentAGI Cloud API what is available for this installation. It never fails the surrounding gather: a check that cannot be made is a fact *about* the installation, recorded in the result, not a reason to throw away everything else the checker learned.
+`GatherUpdatesInfo` (`checker/updates.go`) asks the NullHawk Cloud API what is available for this installation. It never fails the surrounding gather: a check that cannot be made is a fact *about* the installation, recorded in the result, not a reason to throw away everything else the checker learned.
 
 The call goes to `https://update.pentagi.com` (`UPDATE_SERVER_HOST` overrides the host) through the installer's own `PROXY_URL`, and carries `LICENSE_KEY` when it is present and holds up. A key that does not hold up is deliberately **not** fatal — the check runs without it and the reason is written to the log, because otherwise the only symptom is a tier the user did not expect. `UPDATE_STRATEGY` selects the release channel (`preview` by default, also `stable` and `nightly`); an unrecognised value falls back to `preview` with a warning rather than failing the check, since a typo should not leave an installation unable to learn about security updates. The default is `preview` because `stable` measures the answer against curated releases, and a stack with no published release is then offered nothing at all — which reads as "no updates exist" when it means "no releases are published for this yet".
 

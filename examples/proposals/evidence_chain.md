@@ -1,13 +1,13 @@
-# RFC: Cryptographic Evidence Chain for PentAGI Operations
+# RFC: Cryptographic Evidence Chain for NullHawk Operations
 
-Issue [#235](https://github.com/vxcontrol/pentagi/issues/235) proposes signed evidence receipts for PentAGI pentest operations. This RFC captures a possible design direction without committing the project to an implementation.
+Issue [#235](https://github.com/vxcontrol/pentagi/issues/235) proposes signed evidence receipts for NullHawk pentest operations. This RFC captures a possible design direction without committing the project to an implementation.
 
 ## Goals
 
 - Make reports verifiable against the tool actions, artifacts, and agent decisions that produced them.
 - Detect deleted, modified, reordered, or fabricated evidence after a flow completes.
 - Preserve the existing flow, task, subtask, and toolcall model instead of adding a separate audit workflow.
-- Keep verification possible outside a running PentAGI instance.
+- Keep verification possible outside a running NullHawk instance.
 
 ## Non-Goals
 

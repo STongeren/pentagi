@@ -24,6 +24,12 @@ type Config struct {
 	DataDir string `env:"DATA_DIR" envDefault:"./data"`
 	AskUser bool   `env:"ASK_USER" envDefault:"false"`
 
+	// RequireTargetVerification gates flow creation on proven target ownership.
+	// Off by default so existing deployments and tests are unchanged; when on, the
+	// flow-creation path fails closed unless every target in the input is a
+	// currently-verified target of the requesting user.
+	RequireTargetVerification bool `env:"REQUIRE_TARGET_VERIFICATION" envDefault:"false"`
+
 	// TenantID namespaces every externally-visible artifact this instance creates
 	// (PostgreSQL schema, docker object names, Graphiti group ids, telemetry identity)
 	TenantID string `env:"TENANT_ID" envDefault:""`

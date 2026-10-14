@@ -368,38 +368,41 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		AddFavoriteFlow         func(childComplexity int, flowID int64) int
-		AnonymizeText           func(childComplexity int, text string) int
-		CallAssistant           func(childComplexity int, flowID int64, assistantID int64, input string, useAgents bool, resourceIds []int64) int
-		CreateAPIToken          func(childComplexity int, input model.CreateAPITokenInput) int
-		CreateAssistant         func(childComplexity int, flowID int64, modelProvider string, input string, useAgents bool, resourceIds []int64) int
-		CreateFlow              func(childComplexity int, modelProvider string, input string, resourceIds []int64) int
-		CreateFlowTemplate      func(childComplexity int, input model.CreateFlowTemplateInput) int
-		CreateKnowledgeDocument func(childComplexity int, input model.CreateKnowledgeDocumentInput) int
-		CreatePrompt            func(childComplexity int, typeArg model.PromptType, template string) int
-		CreateProvider          func(childComplexity int, name string, typeArg model.ProviderType, agents model.AgentsConfig) int
-		DeleteAPIToken          func(childComplexity int, tokenID string) int
-		DeleteAssistant         func(childComplexity int, flowID int64, assistantID int64) int
-		DeleteFavoriteFlow      func(childComplexity int, flowID int64) int
-		DeleteFlow              func(childComplexity int, flowID int64) int
-		DeleteFlowTemplate      func(childComplexity int, templateID int64) int
-		DeleteKnowledgeDocument func(childComplexity int, id string) int
-		DeletePrompt            func(childComplexity int, promptID int64) int
-		DeleteProvider          func(childComplexity int, providerID int64) int
-		FinishFlow              func(childComplexity int, flowID int64) int
-		PutUserInput            func(childComplexity int, flowID int64, input string, modelProvider *string, resourceIds []int64) int
-		RenameFlow              func(childComplexity int, flowID int64, title string) int
-		RenameKnowledgeDocument func(childComplexity int, id string, question string) int
-		StopAssistant           func(childComplexity int, flowID int64, assistantID int64) int
-		StopFlow                func(childComplexity int, flowID int64) int
-		TestAgent               func(childComplexity int, typeArg model.ProviderType, agentType model.AgentConfigType, agent model.AgentConfig, simple *model.AgentConfig) int
-		TestProvider            func(childComplexity int, typeArg model.ProviderType, agents model.AgentsConfig) int
-		UpdateAPIToken          func(childComplexity int, tokenID string, input model.UpdateAPITokenInput) int
-		UpdateFlowTemplate      func(childComplexity int, templateID int64, input model.UpdateFlowTemplateInput) int
-		UpdateKnowledgeDocument func(childComplexity int, id string, input model.UpdateKnowledgeDocumentInput) int
-		UpdatePrompt            func(childComplexity int, promptID int64, template string) int
-		UpdateProvider          func(childComplexity int, providerID int64, name string, agents model.AgentsConfig) int
-		ValidatePrompt          func(childComplexity int, typeArg model.PromptType, template string) int
+		AddFavoriteFlow           func(childComplexity int, flowID int64) int
+		AnonymizeText             func(childComplexity int, text string) int
+		CallAssistant             func(childComplexity int, flowID int64, assistantID int64, input string, useAgents bool, resourceIds []int64) int
+		CheckTargetVerification   func(childComplexity int, id int64) int
+		CreateAPIToken            func(childComplexity int, input model.CreateAPITokenInput) int
+		CreateAssistant           func(childComplexity int, flowID int64, modelProvider string, input string, useAgents bool, resourceIds []int64) int
+		CreateFlow                func(childComplexity int, modelProvider string, input string, resourceIds []int64) int
+		CreateFlowTemplate        func(childComplexity int, input model.CreateFlowTemplateInput) int
+		CreateKnowledgeDocument   func(childComplexity int, input model.CreateKnowledgeDocumentInput) int
+		CreatePrompt              func(childComplexity int, typeArg model.PromptType, template string) int
+		CreateProvider            func(childComplexity int, name string, typeArg model.ProviderType, agents model.AgentsConfig) int
+		DeleteAPIToken            func(childComplexity int, tokenID string) int
+		DeleteAssistant           func(childComplexity int, flowID int64, assistantID int64) int
+		DeleteFavoriteFlow        func(childComplexity int, flowID int64) int
+		DeleteFlow                func(childComplexity int, flowID int64) int
+		DeleteFlowTemplate        func(childComplexity int, templateID int64) int
+		DeleteKnowledgeDocument   func(childComplexity int, id string) int
+		DeletePrompt              func(childComplexity int, promptID int64) int
+		DeleteProvider            func(childComplexity int, providerID int64) int
+		DeleteVerifiedTarget      func(childComplexity int, id int64) int
+		FinishFlow                func(childComplexity int, flowID int64) int
+		PutUserInput              func(childComplexity int, flowID int64, input string, modelProvider *string, resourceIds []int64) int
+		RenameFlow                func(childComplexity int, flowID int64, title string) int
+		RenameKnowledgeDocument   func(childComplexity int, id string, question string) int
+		RequestTargetVerification func(childComplexity int, target string, method model.TargetVerificationMethod) int
+		StopAssistant             func(childComplexity int, flowID int64, assistantID int64) int
+		StopFlow                  func(childComplexity int, flowID int64) int
+		TestAgent                 func(childComplexity int, typeArg model.ProviderType, agentType model.AgentConfigType, agent model.AgentConfig, simple *model.AgentConfig) int
+		TestProvider              func(childComplexity int, typeArg model.ProviderType, agents model.AgentsConfig) int
+		UpdateAPIToken            func(childComplexity int, tokenID string, input model.UpdateAPITokenInput) int
+		UpdateFlowTemplate        func(childComplexity int, templateID int64, input model.UpdateFlowTemplateInput) int
+		UpdateKnowledgeDocument   func(childComplexity int, id string, input model.UpdateKnowledgeDocumentInput) int
+		UpdatePrompt              func(childComplexity int, promptID int64, template string) int
+		UpdateProvider            func(childComplexity int, providerID int64, name string, agents model.AgentsConfig) int
+		ValidatePrompt            func(childComplexity int, typeArg model.PromptType, template string) int
 	}
 
 	PromptValidationResult struct {
@@ -533,6 +536,7 @@ type ComplexityRoot struct {
 		UsageStatsByProvider            func(childComplexity int) int
 		UsageStatsTotal                 func(childComplexity int) int
 		VectorStoreLogs                 func(childComplexity int, flowID int64) int
+		VerifiedTargets                 func(childComplexity int) int
 		VersionInfo                     func(childComplexity int) int
 	}
 
@@ -765,6 +769,19 @@ type ComplexityRoot struct {
 		TaskID    func(childComplexity int) int
 	}
 
+	VerifiedTarget struct {
+		CreatedAt  func(childComplexity int) int
+		ExpiresAt  func(childComplexity int) int
+		ID         func(childComplexity int) int
+		LastError  func(childComplexity int) int
+		Method     func(childComplexity int) int
+		Status     func(childComplexity int) int
+		Target     func(childComplexity int) int
+		Token      func(childComplexity int) int
+		UpdatedAt  func(childComplexity int) int
+		VerifiedAt func(childComplexity int) int
+	}
+
 	VersionInfo struct {
 		Build     func(childComplexity int) int
 		CheckedAt func(childComplexity int) int
@@ -809,6 +826,9 @@ type MutationResolver interface {
 	RenameKnowledgeDocument(ctx context.Context, id string, question string) (*model.KnowledgeDocument, error)
 	DeleteKnowledgeDocument(ctx context.Context, id string) (model.ResultType, error)
 	AnonymizeText(ctx context.Context, text string) (string, error)
+	RequestTargetVerification(ctx context.Context, target string, method model.TargetVerificationMethod) (*model.VerifiedTarget, error)
+	CheckTargetVerification(ctx context.Context, id int64) (*model.VerifiedTarget, error)
+	DeleteVerifiedTarget(ctx context.Context, id int64) (model.ResultType, error)
 }
 type QueryResolver interface {
 	Providers(ctx context.Context) ([]*model.Provider, error)
@@ -849,6 +869,7 @@ type QueryResolver interface {
 	SettingsUser(ctx context.Context) (*model.UserPreferences, error)
 	APIToken(ctx context.Context, tokenID string) (*model.APIToken, error)
 	APITokens(ctx context.Context) ([]*model.APIToken, error)
+	VerifiedTargets(ctx context.Context) ([]*model.VerifiedTarget, error)
 	FlowTemplate(ctx context.Context, templateID int64) (*model.FlowTemplate, error)
 	FlowTemplates(ctx context.Context) ([]*model.FlowTemplate, error)
 	Resources(ctx context.Context, path *string, recursive *bool) ([]*model.UserResource, error)
@@ -2457,6 +2478,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CallAssistant(childComplexity, args["flowId"].(int64), args["assistantId"].(int64), args["input"].(string), args["useAgents"].(bool), args["resourceIds"].([]int64)), true
 
+	case "Mutation.checkTargetVerification":
+		if e.complexity.Mutation.CheckTargetVerification == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_checkTargetVerification_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CheckTargetVerification(childComplexity, args["id"].(int64)), true
+
 	case "Mutation.createAPIToken":
 		if e.complexity.Mutation.CreateAPIToken == nil {
 			break
@@ -2637,6 +2670,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteProvider(childComplexity, args["providerId"].(int64)), true
 
+	case "Mutation.deleteVerifiedTarget":
+		if e.complexity.Mutation.DeleteVerifiedTarget == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteVerifiedTarget_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteVerifiedTarget(childComplexity, args["id"].(int64)), true
+
 	case "Mutation.finishFlow":
 		if e.complexity.Mutation.FinishFlow == nil {
 			break
@@ -2684,6 +2729,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RenameKnowledgeDocument(childComplexity, args["id"].(string), args["question"].(string)), true
+
+	case "Mutation.requestTargetVerification":
+		if e.complexity.Mutation.RequestTargetVerification == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_requestTargetVerification_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RequestTargetVerification(childComplexity, args["target"].(string), args["method"].(model.TargetVerificationMethod)), true
 
 	case "Mutation.stopAssistant":
 		if e.complexity.Mutation.StopAssistant == nil {
@@ -3665,6 +3722,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.VectorStoreLogs(childComplexity, args["flowId"].(int64)), true
+
+	case "Query.verifiedTargets":
+		if e.complexity.Query.VerifiedTargets == nil {
+			break
+		}
+
+		return e.complexity.Query.VerifiedTargets(childComplexity), true
 
 	case "Query.versionInfo":
 		if e.complexity.Query.VersionInfo == nil {
@@ -4951,6 +5015,76 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.VectorStoreLog.TaskID(childComplexity), true
 
+	case "VerifiedTarget.createdAt":
+		if e.complexity.VerifiedTarget.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.VerifiedTarget.CreatedAt(childComplexity), true
+
+	case "VerifiedTarget.expiresAt":
+		if e.complexity.VerifiedTarget.ExpiresAt == nil {
+			break
+		}
+
+		return e.complexity.VerifiedTarget.ExpiresAt(childComplexity), true
+
+	case "VerifiedTarget.id":
+		if e.complexity.VerifiedTarget.ID == nil {
+			break
+		}
+
+		return e.complexity.VerifiedTarget.ID(childComplexity), true
+
+	case "VerifiedTarget.lastError":
+		if e.complexity.VerifiedTarget.LastError == nil {
+			break
+		}
+
+		return e.complexity.VerifiedTarget.LastError(childComplexity), true
+
+	case "VerifiedTarget.method":
+		if e.complexity.VerifiedTarget.Method == nil {
+			break
+		}
+
+		return e.complexity.VerifiedTarget.Method(childComplexity), true
+
+	case "VerifiedTarget.status":
+		if e.complexity.VerifiedTarget.Status == nil {
+			break
+		}
+
+		return e.complexity.VerifiedTarget.Status(childComplexity), true
+
+	case "VerifiedTarget.target":
+		if e.complexity.VerifiedTarget.Target == nil {
+			break
+		}
+
+		return e.complexity.VerifiedTarget.Target(childComplexity), true
+
+	case "VerifiedTarget.token":
+		if e.complexity.VerifiedTarget.Token == nil {
+			break
+		}
+
+		return e.complexity.VerifiedTarget.Token(childComplexity), true
+
+	case "VerifiedTarget.updatedAt":
+		if e.complexity.VerifiedTarget.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.VerifiedTarget.UpdatedAt(childComplexity), true
+
+	case "VerifiedTarget.verifiedAt":
+		if e.complexity.VerifiedTarget.VerifiedAt == nil {
+			break
+		}
+
+		return e.complexity.VerifiedTarget.VerifiedAt(childComplexity), true
+
 	case "VersionInfo.build":
 		if e.complexity.VersionInfo.Build == nil {
 			break
@@ -5353,6 +5487,38 @@ func (ec *executionContext) field_Mutation_callAssistant_argsResourceIds(
 	}
 
 	var zeroVal []int64
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_checkTargetVerification_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_checkTargetVerification_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_checkTargetVerification_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int64, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["id"]
+	if !ok {
+		var zeroVal int64
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalNID2int64(ctx, tmp)
+	}
+
+	var zeroVal int64
 	return zeroVal, nil
 }
 
@@ -6106,6 +6272,38 @@ func (ec *executionContext) field_Mutation_deleteProvider_argsProviderID(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_Mutation_deleteVerifiedTarget_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_deleteVerifiedTarget_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteVerifiedTarget_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int64, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["id"]
+	if !ok {
+		var zeroVal int64
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalNID2int64(ctx, tmp)
+	}
+
+	var zeroVal int64
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Mutation_finishFlow_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -6366,6 +6564,65 @@ func (ec *executionContext) field_Mutation_renameKnowledgeDocument_argsQuestion(
 	}
 
 	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_requestTargetVerification_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_requestTargetVerification_argsTarget(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["target"] = arg0
+	arg1, err := ec.field_Mutation_requestTargetVerification_argsMethod(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["method"] = arg1
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_requestTargetVerification_argsTarget(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["target"]
+	if !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("target"))
+	if tmp, ok := rawArgs["target"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_requestTargetVerification_argsMethod(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (model.TargetVerificationMethod, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["method"]
+	if !ok {
+		var zeroVal model.TargetVerificationMethod
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("method"))
+	if tmp, ok := rawArgs["method"]; ok {
+		return ec.unmarshalNTargetVerificationMethod2pentagiᚋpkgᚋgraphᚋmodelᚐTargetVerificationMethod(ctx, tmp)
+	}
+
+	var zeroVal model.TargetVerificationMethod
 	return zeroVal, nil
 }
 
@@ -21271,6 +21528,215 @@ func (ec *executionContext) fieldContext_Mutation_anonymizeText(ctx context.Cont
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_requestTargetVerification(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_requestTargetVerification(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RequestTargetVerification(rctx, fc.Args["target"].(string), fc.Args["method"].(model.TargetVerificationMethod))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.VerifiedTarget)
+	fc.Result = res
+	return ec.marshalNVerifiedTarget2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐVerifiedTarget(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_requestTargetVerification(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_VerifiedTarget_id(ctx, field)
+			case "target":
+				return ec.fieldContext_VerifiedTarget_target(ctx, field)
+			case "method":
+				return ec.fieldContext_VerifiedTarget_method(ctx, field)
+			case "token":
+				return ec.fieldContext_VerifiedTarget_token(ctx, field)
+			case "status":
+				return ec.fieldContext_VerifiedTarget_status(ctx, field)
+			case "lastError":
+				return ec.fieldContext_VerifiedTarget_lastError(ctx, field)
+			case "verifiedAt":
+				return ec.fieldContext_VerifiedTarget_verifiedAt(ctx, field)
+			case "expiresAt":
+				return ec.fieldContext_VerifiedTarget_expiresAt(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_VerifiedTarget_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_VerifiedTarget_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type VerifiedTarget", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_requestTargetVerification_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_checkTargetVerification(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_checkTargetVerification(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CheckTargetVerification(rctx, fc.Args["id"].(int64))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.VerifiedTarget)
+	fc.Result = res
+	return ec.marshalNVerifiedTarget2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐVerifiedTarget(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_checkTargetVerification(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_VerifiedTarget_id(ctx, field)
+			case "target":
+				return ec.fieldContext_VerifiedTarget_target(ctx, field)
+			case "method":
+				return ec.fieldContext_VerifiedTarget_method(ctx, field)
+			case "token":
+				return ec.fieldContext_VerifiedTarget_token(ctx, field)
+			case "status":
+				return ec.fieldContext_VerifiedTarget_status(ctx, field)
+			case "lastError":
+				return ec.fieldContext_VerifiedTarget_lastError(ctx, field)
+			case "verifiedAt":
+				return ec.fieldContext_VerifiedTarget_verifiedAt(ctx, field)
+			case "expiresAt":
+				return ec.fieldContext_VerifiedTarget_expiresAt(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_VerifiedTarget_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_VerifiedTarget_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type VerifiedTarget", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_checkTargetVerification_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteVerifiedTarget(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteVerifiedTarget(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteVerifiedTarget(rctx, fc.Args["id"].(int64))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(model.ResultType)
+	fc.Result = res
+	return ec.marshalNResultType2pentagiᚋpkgᚋgraphᚋmodelᚐResultType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteVerifiedTarget(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ResultType does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteVerifiedTarget_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _PromptValidationResult_result(ctx context.Context, field graphql.CollectedField, obj *model.PromptValidationResult) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_PromptValidationResult_result(ctx, field)
 	if err != nil {
@@ -26699,6 +27165,72 @@ func (ec *executionContext) fieldContext_Query_apiTokens(_ context.Context, fiel
 				return ec.fieldContext_APIToken_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type APIToken", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_verifiedTargets(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_verifiedTargets(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().VerifiedTargets(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.VerifiedTarget)
+	fc.Result = res
+	return ec.marshalNVerifiedTarget2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐVerifiedTargetᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_verifiedTargets(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_VerifiedTarget_id(ctx, field)
+			case "target":
+				return ec.fieldContext_VerifiedTarget_target(ctx, field)
+			case "method":
+				return ec.fieldContext_VerifiedTarget_method(ctx, field)
+			case "token":
+				return ec.fieldContext_VerifiedTarget_token(ctx, field)
+			case "status":
+				return ec.fieldContext_VerifiedTarget_status(ctx, field)
+			case "lastError":
+				return ec.fieldContext_VerifiedTarget_lastError(ctx, field)
+			case "verifiedAt":
+				return ec.fieldContext_VerifiedTarget_verifiedAt(ctx, field)
+			case "expiresAt":
+				return ec.fieldContext_VerifiedTarget_expiresAt(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_VerifiedTarget_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_VerifiedTarget_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type VerifiedTarget", field.Name)
 		},
 	}
 	return fc, nil
@@ -36254,6 +36786,437 @@ func (ec *executionContext) fieldContext_VectorStoreLog_createdAt(_ context.Cont
 	return fc, nil
 }
 
+func (ec *executionContext) _VerifiedTarget_id(ctx context.Context, field graphql.CollectedField, obj *model.VerifiedTarget) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VerifiedTarget_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	fc.Result = res
+	return ec.marshalNID2int64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VerifiedTarget_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VerifiedTarget",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VerifiedTarget_target(ctx context.Context, field graphql.CollectedField, obj *model.VerifiedTarget) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VerifiedTarget_target(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Target, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VerifiedTarget_target(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VerifiedTarget",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VerifiedTarget_method(ctx context.Context, field graphql.CollectedField, obj *model.VerifiedTarget) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VerifiedTarget_method(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Method, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(model.TargetVerificationMethod)
+	fc.Result = res
+	return ec.marshalNTargetVerificationMethod2pentagiᚋpkgᚋgraphᚋmodelᚐTargetVerificationMethod(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VerifiedTarget_method(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VerifiedTarget",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type TargetVerificationMethod does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VerifiedTarget_token(ctx context.Context, field graphql.CollectedField, obj *model.VerifiedTarget) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VerifiedTarget_token(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Token, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VerifiedTarget_token(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VerifiedTarget",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VerifiedTarget_status(ctx context.Context, field graphql.CollectedField, obj *model.VerifiedTarget) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VerifiedTarget_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(model.TargetVerificationStatus)
+	fc.Result = res
+	return ec.marshalNTargetVerificationStatus2pentagiᚋpkgᚋgraphᚋmodelᚐTargetVerificationStatus(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VerifiedTarget_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VerifiedTarget",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type TargetVerificationStatus does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VerifiedTarget_lastError(ctx context.Context, field graphql.CollectedField, obj *model.VerifiedTarget) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VerifiedTarget_lastError(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LastError, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VerifiedTarget_lastError(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VerifiedTarget",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VerifiedTarget_verifiedAt(ctx context.Context, field graphql.CollectedField, obj *model.VerifiedTarget) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VerifiedTarget_verifiedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.VerifiedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VerifiedTarget_verifiedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VerifiedTarget",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VerifiedTarget_expiresAt(ctx context.Context, field graphql.CollectedField, obj *model.VerifiedTarget) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VerifiedTarget_expiresAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ExpiresAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VerifiedTarget_expiresAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VerifiedTarget",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VerifiedTarget_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.VerifiedTarget) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VerifiedTarget_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VerifiedTarget_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VerifiedTarget",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _VerifiedTarget_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.VerifiedTarget) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_VerifiedTarget_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_VerifiedTarget_updatedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "VerifiedTarget",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _VersionInfo_current(ctx context.Context, field graphql.CollectedField, obj *model.VersionInfo) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_VersionInfo_current(ctx, field)
 	if err != nil {
@@ -41312,6 +42275,27 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "requestTargetVerification":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_requestTargetVerification(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "checkTargetVerification":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_checkTargetVerification(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deleteVerifiedTarget":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteVerifiedTarget(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -42700,6 +43684,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_apiTokens(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "verifiedTargets":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_verifiedTargets(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -44193,6 +45199,81 @@ func (ec *executionContext) _VectorStoreLog(ctx context.Context, sel ast.Selecti
 			out.Values[i] = ec._VectorStoreLog_subtaskId(ctx, field, obj)
 		case "createdAt":
 			out.Values[i] = ec._VectorStoreLog_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var verifiedTargetImplementors = []string{"VerifiedTarget"}
+
+func (ec *executionContext) _VerifiedTarget(ctx context.Context, sel ast.SelectionSet, obj *model.VerifiedTarget) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, verifiedTargetImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("VerifiedTarget")
+		case "id":
+			out.Values[i] = ec._VerifiedTarget_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "target":
+			out.Values[i] = ec._VerifiedTarget_target(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "method":
+			out.Values[i] = ec._VerifiedTarget_method(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "token":
+			out.Values[i] = ec._VerifiedTarget_token(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "status":
+			out.Values[i] = ec._VerifiedTarget_status(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "lastError":
+			out.Values[i] = ec._VerifiedTarget_lastError(ctx, field, obj)
+		case "verifiedAt":
+			out.Values[i] = ec._VerifiedTarget_verifiedAt(ctx, field, obj)
+		case "expiresAt":
+			out.Values[i] = ec._VerifiedTarget_expiresAt(ctx, field, obj)
+		case "createdAt":
+			out.Values[i] = ec._VerifiedTarget_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updatedAt":
+			out.Values[i] = ec._VerifiedTarget_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -46251,6 +47332,26 @@ func (ec *executionContext) marshalNSubtaskExecutionStats2ᚖpentagiᚋpkgᚋgra
 	return ec._SubtaskExecutionStats(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNTargetVerificationMethod2pentagiᚋpkgᚋgraphᚋmodelᚐTargetVerificationMethod(ctx context.Context, v interface{}) (model.TargetVerificationMethod, error) {
+	var res model.TargetVerificationMethod
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTargetVerificationMethod2pentagiᚋpkgᚋgraphᚋmodelᚐTargetVerificationMethod(ctx context.Context, sel ast.SelectionSet, v model.TargetVerificationMethod) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNTargetVerificationStatus2pentagiᚋpkgᚋgraphᚋmodelᚐTargetVerificationStatus(ctx context.Context, v interface{}) (model.TargetVerificationStatus, error) {
+	var res model.TargetVerificationStatus
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTargetVerificationStatus2pentagiᚋpkgᚋgraphᚋmodelᚐTargetVerificationStatus(ctx context.Context, sel ast.SelectionSet, v model.TargetVerificationStatus) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) marshalNTask2pentagiᚋpkgᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v model.Task) graphql.Marshaler {
 	return ec._Task(ctx, sel, &v)
 }
@@ -46647,6 +47748,64 @@ func (ec *executionContext) marshalNVectorStoreLog2ᚖpentagiᚋpkgᚋgraphᚋmo
 		return graphql.Null
 	}
 	return ec._VectorStoreLog(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNVerifiedTarget2pentagiᚋpkgᚋgraphᚋmodelᚐVerifiedTarget(ctx context.Context, sel ast.SelectionSet, v model.VerifiedTarget) graphql.Marshaler {
+	return ec._VerifiedTarget(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNVerifiedTarget2ᚕᚖpentagiᚋpkgᚋgraphᚋmodelᚐVerifiedTargetᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.VerifiedTarget) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNVerifiedTarget2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐVerifiedTarget(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNVerifiedTarget2ᚖpentagiᚋpkgᚋgraphᚋmodelᚐVerifiedTarget(ctx context.Context, sel ast.SelectionSet, v *model.VerifiedTarget) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._VerifiedTarget(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNVersionInfo2pentagiᚋpkgᚋgraphᚋmodelᚐVersionInfo(ctx context.Context, sel ast.SelectionSet, v model.VersionInfo) graphql.Marshaler {

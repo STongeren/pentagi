@@ -1,4 +1,4 @@
-# OSINT Integration Scenarios for PentAGI Agents
+# OSINT Integration Scenarios for NullHawk Agents
 
 Issue [#68](https://github.com/vxcontrol/pentagi/issues/68) asks about adding OSINT frameworks such as ransomware.live and Flare. This guide answers the main product question first: what should agents ask these systems, when should they ask, and what should they do with the result?
 
@@ -97,7 +97,7 @@ Expected output:
 
 ## Flare (`flare`)
 
-Flare is better suited to customer-owned exposure monitoring because it works with tenants, identifiers, credentials, events, searches, and intelligence feeds. A PentAGI integration should assume the user already has a Flare account, API key, tenant context, and authorization to query exposures for the target organization.
+Flare is better suited to customer-owned exposure monitoring because it works with tenants, identifiers, credentials, events, searches, and intelligence feeds. A NullHawk integration should assume the user already has a Flare account, API key, tenant context, and authorization to query exposures for the target organization.
 
 Relevant docs:
 
@@ -155,4 +155,4 @@ Start with a provider-neutral external function wrapper:
 - Agents receive summaries and evidence references, not raw credential or cookie secrets.
 - Results are stored as report context and optional flow evidence, not as automatic new targets.
 
-This keeps the first contribution small while answering whether OSINT enrichment improves PentAGI outcomes before adding a larger native integration.
+This keeps the first contribution small while answering whether OSINT enrichment improves NullHawk outcomes before adding a larger native integration.
